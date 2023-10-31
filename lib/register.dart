@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/login.dart';
-import 'package:pill_reminder/sql_helper.dart';
+import 'package:pill_reminder/db/sql_helper.dart';
+import 'package:pill_reminder/model/user.dart';
 
 class RegisterWidget extends StatefulWidget {
   const RegisterWidget({super.key});
@@ -16,7 +19,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController dobController = TextEditingController();
-  
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+
   DateTime? _selectedDate;
   void _presentDatePicker() {
     // showDatePicker is a pre-made funtion of Flutter
@@ -26,21 +31,23 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             firstDate: DateTime(2023),
             lastDate: DateTime.now())
         .then((pickedDate) {
-      if(pickedDate != null ){
-                      print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
-                      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate); 
-                      print(formattedDate); //formatted date output using intl package =>  2021-03-16
-                        //you can implement different kind of Date Format here according to your requirement
+      if (pickedDate != null) {
+        String formattedDate = DateFormat('d/MM/yyyy').format(pickedDate);
+        print(
+            formattedDate); //formatted date output using intl package =>  2021-03-16
+        //you can implement different kind of Date Format here according to your requirement
 
-                      setState(() {
-                         dobController.text = formattedDate; //set output date to TextField value. 
-                      });
-                  }else{
-                      print("Date is not selected");
-                  }
+        setState(() {
+          dobController.text =
+              formattedDate; //set output date to TextField value.
+        });
+      } else {
+        print("Date is not selected");
+      }
     });
   }
 
+  final focus = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +63,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                   fontWeight: FontWeight.w500,
                   fontSize: 30),
             )),
-       
         Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
@@ -84,28 +90,51 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           )
         ]),
   */
-  
-      Container(
+        Container(
           padding: const EdgeInsets.all(10),
           child: TextField(
-           
+            controller: firstNameController,
+            textInputAction: TextInputAction.next,
+            textCapitalization: TextCapitalization.words,
+            autofocus: true,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'First Name',
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          child: TextField(
+            controller: lastNameController,
+            textInputAction: TextInputAction.next,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Last Name',
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          child: TextField(
+            readOnly: true,
             controller: dobController,
+            focusNode: focus,
+            textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Date of Birth',
-               icon: Icon(Icons.calendar_today,textDirection: TextDirection.rtl),
+              icon: Icon(Icons.calendar_today),
             ),
-             onTap: () => {
-_presentDatePicker()
-
-             },
+            onTap: () => {_presentDatePicker()},
           ),
         ),
-    
         Container(
           padding: const EdgeInsets.all(10),
           child: TextField(
             controller: usernameController,
+            textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Username/Email',
@@ -116,19 +145,11 @@ _presentDatePicker()
           padding: const EdgeInsets.all(10),
           child: TextField(
             controller: phoneNumberController,
+            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Phonenumber',
-            ),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(10),
-          child: TextField(
-            controller: usernameController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Username',
             ),
           ),
         ),
@@ -137,6 +158,7 @@ _presentDatePicker()
           child: TextField(
             obscureText: true,
             controller: passwordController,
+            textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Password',
@@ -147,6 +169,7 @@ _presentDatePicker()
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: TextField(
             obscureText: true,
+            textInputAction: TextInputAction.next,
             controller: confirmPasswordController,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -190,7 +213,13 @@ _presentDatePicker()
   }
 
   Future<void> _addUser() async {
-    await SQLHelper.createUser(
-        usernameController.text, passwordController.text);
+    User newUser = User(
+      firstName: firstNameController.text,
+      lastName: lastNameController.text,
+      username: usernameController.text,
+      password: passwordController.text,
+      phonenumber: phoneNumberController.text,
+    );
+    await UserHelper.createUser(newUser);
   }
 }

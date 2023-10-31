@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/home.dart';
 import 'package:pill_reminder/register.dart';
-import 'package:pill_reminder/sql_helper.dart';
+import 'package:pill_reminder/db/sql_helper.dart';
+import 'package:pill_reminder/db/user_helper.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -110,7 +111,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 bool validateUser(String username,String password)  {
  
-Future<List<Map<String, dynamic>>>  users=  SQLHelper.checkUser(username, password);
+Future<List<Map<String, dynamic>>>  users=  UserHelper.checkUser(username, password);
 List<Map<String, dynamic>> data=[];
 users.then((value) => {
   data=value,print(data)
