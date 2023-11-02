@@ -4,6 +4,10 @@ class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE user(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        firstName TEXT,
+        lastName TEXT,
+        dob TEXT,
+        phonenumber TEXT,
         username TEXT,
         password TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

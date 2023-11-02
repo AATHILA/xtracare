@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
-import 'package:pill_reminder/home.dart';
-import 'package:pill_reminder/register.dart';
 import 'package:pill_reminder/db/sql_helper.dart';
+import 'package:pill_reminder/home.dart';
+import 'package:pill_reminder/model/user.dart';
+import 'package:pill_reminder/register.dart';
 import 'package:pill_reminder/db/user_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -13,10 +14,9 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-
-
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,30 +59,32 @@ class _LoginWidgetState extends State<LoginWidget> {
               labelText: 'Password',
             ),
           ),
-    
         ),
-         TextButton(
-              onPressed: () {
-                //forgot password screen
-              },
-              child: const Text('Forgot Password',),
-            ),
+        TextButton(
+          onPressed: () {
+            //forgot password screen
+          },
+          child: const Text(
+            'Forgot Password',
+          ),
+        ),
         Container(
             height: 50,
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: ElevatedButton(
               child: const Text('Login'),
               onPressed: () {
-              
-                bool valid=validateUser(usernameController.text,passwordController.text);
-                if (valid) {
-  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const HomeWidget()),
-                );
-
-                } 
+                validateUser(usernameController.text.trim(), passwordController.text.trim())
+                    .then((value) => {
+                      print(value),
+                          if (value.isNotEmpty){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeWidget()),
+                          ),
+                          saveUserData(usernameController.text.trim())}
+                        });
               },
             )),
         Row(
@@ -108,16 +110,17 @@ class _LoginWidgetState extends State<LoginWidget> {
     ));
   }
 
+  Future<List<Map<String, dynamic>>> validateUser(
+      String username, String password) {
+    return UserHelper.checkUser(username, password);
+  }
 
-bool validateUser(String username,String password)  {
- 
-Future<List<Map<String, dynamic>>>  users=  UserHelper.checkUser(username, password);
-List<Map<String, dynamic>> data=[];
-users.then((value) => {
-  data=value,print(data)
-});
-print(data);
-if(data.isEmpty){ return false;}
-else {return true;}
-}
+  Future<void> saveUserData(String username) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('login_session_username', username);
+  }
+
+
+
+  Future<void> getUserData(String username) async {}
 }

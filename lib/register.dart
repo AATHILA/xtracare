@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/login.dart';
-import 'package:pill_reminder/db/sql_helper.dart';
 import 'package:pill_reminder/model/user.dart';
+import 'package:pill_reminder/validate_helper.dart';
 
 class RegisterWidget extends StatefulWidget {
   const RegisterWidget({super.key});
@@ -21,18 +21,78 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   TextEditingController dobController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  bool _validate = true;
+  bool _hidePass = true;
+  String validField = '', errMsg = '';
 
-  DateTime? _selectedDate;
+  void validateFields() {
+    setState(() {
+      _validate = true;
+      if (!ValidatorHelper.validateFields(
+          firstNameController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'FIRST';
+        errMsg = "First Name is required";
+      } else if (!ValidatorHelper.validateFields(
+          lastNameController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'LAST';
+        errMsg = "Last Name is required";
+      } else if (!ValidatorHelper.validateFields(
+          dobController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'DOB';
+        errMsg = "Date of Birth is required";
+      } else if (!ValidatorHelper.validateFields(
+          usernameController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'USERNAME';
+        errMsg = "Username/Email is required";
+      } else if (!ValidatorHelper.validateFields(
+          usernameController.text, 'EMAIL')) {
+        _validate = false;
+        validField = 'USERNAME';
+        errMsg = "Username/Email is invalid";
+      }
+
+      else if (!ValidatorHelper.validateFields(
+          phoneNumberController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'PHONE';
+        errMsg = "PhoneNumber is required";
+      }
+      else if (!ValidatorHelper.validateFields(
+          phoneNumberController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'PASS';
+        errMsg = "Password is required";
+      }
+      else if (!ValidatorHelper.validateFields(
+          phoneNumberController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'CONFIRMPASS';
+        errMsg = "Confirm Password is required";
+      }
+      else if (passwordController.text!=confirmPasswordController.text) {
+        _validate = false;
+        validField = 'CONFIRMPASS';
+        errMsg = "Confirm Password not match with password";
+      }
+
+
+    });
+  }
+
   void _presentDatePicker() {
     // showDatePicker is a pre-made funtion of Flutter
     showDatePicker(
             context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2023),
+            initialDate:  DateTime(DateTime.now().year-18),
+            firstDate: DateTime(DateTime.now().year-80),
             lastDate: DateTime.now())
         .then((pickedDate) {
       if (pickedDate != null) {
-        String formattedDate = DateFormat('d/MM/yyyy').format(pickedDate);
+        String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
         print(
             formattedDate); //formatted date output using intl package =>  2021-03-16
         //you can implement different kind of Date Format here according to your requirement
@@ -45,6 +105,14 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         print("Date is not selected");
       }
     });
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    usernameController.dispose();
+    super.dispose();
   }
 
   final focus = FocusNode();
@@ -70,26 +138,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               'Register User',
               style: TextStyle(fontSize: 20),
             )),
-/*
-             Row(
-               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-          // Show the Date Picker when this button clicked
-          ElevatedButton(
-              onPressed: _presentDatePicker, child: const Text('Select Date', style: TextStyle(fontSize: 20))),
-
-          // display the selected date
-          Container(
-            padding: const EdgeInsets.all(30),
-            child: Text(
-              _selectedDate != null
-                  ? _selectedDate.toString()
-                  : 'No date selected!',
-              style: const TextStyle(fontSize: 20),
-            ),
-          )
-        ]),
-  */
         Container(
           padding: const EdgeInsets.all(10),
           child: TextField(
@@ -97,9 +145,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             textInputAction: TextInputAction.next,
             textCapitalization: TextCapitalization.words,
             autofocus: true,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'First Name',
+              errorText: !_validate && validField == "FIRST" ? errMsg : null,
             ),
           ),
         ),
@@ -109,9 +158,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             controller: lastNameController,
             textInputAction: TextInputAction.next,
             textCapitalization: TextCapitalization.words,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Last Name',
+              errorText: !_validate && validField == "LAST" ? errMsg : null,
             ),
           ),
         ),
@@ -122,10 +172,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             controller: dobController,
             focusNode: focus,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Date of Birth',
-              icon: Icon(Icons.calendar_today),
+              errorText: !_validate && validField == "DOB" ? errMsg : null,
+              suffixIcon: Icon(Icons.calendar_today),
             ),
             onTap: () => {_presentDatePicker()},
           ),
@@ -135,9 +186,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           child: TextField(
             controller: usernameController,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Username/Email',
+              errorText: !_validate && validField == "USERNAME" ? errMsg : null,
             ),
           ),
         ),
@@ -147,21 +199,29 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             controller: phoneNumberController,
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
+            decoration:  InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Phonenumber',
+               errorText: !_validate && validField == "PHONE" ? errMsg : null,
             ),
           ),
         ),
         Container(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: TextField(
-            obscureText: true,
+            obscureText: _hidePass,
             controller: passwordController,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
+            decoration:  InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Password',
+               errorText: !_validate && validField == "PASS" ? errMsg : null,
+              suffixIcon:IconButton(onPressed:(){
+                setState(() {
+                  _hidePass=!_hidePass;
+                });
+              } ,
+                icon: Icon(_hidePass?Icons.visibility_off:Icons.visibility))
             ),
           ),
         ),
@@ -171,9 +231,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             obscureText: true,
             textInputAction: TextInputAction.next,
             controller: confirmPasswordController,
-            decoration: const InputDecoration(
+            decoration:  InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Confirm Password',
+               errorText: !_validate && validField == "CONFIRMPASS" ? errMsg : null,
             ),
           ),
         ),
@@ -183,6 +244,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             child: ElevatedButton(
               child: const Text('Register'),
               onPressed: () {
+                validateFields();
+                if (_validate == false) return;
                 _addUser();
                 Navigator.push(
                   context,
@@ -200,7 +263,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 style: TextStyle(fontSize: 20),
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginWidget()),
                 );
@@ -213,13 +276,16 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   }
 
   Future<void> _addUser() async {
+
     User newUser = User(
-      firstName: firstNameController.text,
-      lastName: lastNameController.text,
-      username: usernameController.text,
-      password: passwordController.text,
-      phonenumber: phoneNumberController.text,
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      username: usernameController.text.trim(),
+      dob:dobController.text.trim(),
+      password: passwordController.text.trim(),
+      phonenumber: phoneNumberController.text.trim(),
     );
+    
     await UserHelper.createUser(newUser);
   }
 }
