@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/home.dart';
 import 'package:pill_reminder/login.dart';
 import 'package:pill_reminder/register.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: myApp(),
+      home: const MyApp(),
       routes: {
         'login': (context) => const LoginWidget(),
         'home': (context) => const HomeWidget(),
         'register': (context) => const RegisterWidget(),
       }));
 }
-class myApp extends StatefulWidget {
- const myApp({super.key});
+class MyApp extends StatefulWidget {
+ const MyApp({super.key});
  
  @override
- State<myApp> createState() => _myAppState();
+ State<MyApp> createState() => _myAppState();
 }
  
-class _myAppState extends State<myApp> {
+class _myAppState extends State<MyApp> {
     @override
   void initState() {
     super.initState();
     Future<List<Map<String,dynamic>>> userlist= UserHelper.getUsers();
     userlist.then((value)=>  print(value));
-    getUserSessionData().then((value) =>{ 
+    SharedPreferHelper.getData("login_session_username").then((value) =>{ 
   
      if ((value != null)) {
       Navigator.of(context).pushNamedAndRemoveUntil('home', (Route<dynamic> route) => false),
@@ -54,8 +54,5 @@ class _myAppState extends State<myApp> {
    );
   }
 
-  Future<String?> getUserSessionData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('login_session_username');
-  }
+
 }

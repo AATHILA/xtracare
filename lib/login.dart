@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pill_reminder/db/sql_helper.dart';
+import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/home.dart';
-import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/register.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,16 +73,22 @@ class _LoginWidgetState extends State<LoginWidget> {
             child: ElevatedButton(
               child: const Text('Login'),
               onPressed: () {
-                validateUser(usernameController.text.trim(), passwordController.text.trim())
+                Map<String, dynamic> map = {};
+                validateUser(usernameController.text.trim(),
+                        passwordController.text.trim())
                     .then((value) => {
-                      print(value),
-                          if (value.isNotEmpty){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeWidget()),
-                          ),
-                          saveUserData(usernameController.text.trim())}
+                          print(value),
+                          if (value.isNotEmpty)
+                            {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomeWidget()),
+                              ),
+                              map['login_session_username'] =
+                                  usernameController.text,
+                              SharedPreferHelper.saveData(map)
+                            }
                         });
               },
             )),
@@ -114,13 +119,4 @@ class _LoginWidgetState extends State<LoginWidget> {
       String username, String password) {
     return UserHelper.checkUser(username, password);
   }
-
-  Future<void> saveUserData(String username) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('login_session_username', username);
-  }
-
-
-
-  Future<void> getUserData(String username) async {}
 }

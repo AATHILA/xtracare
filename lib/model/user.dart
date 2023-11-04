@@ -8,8 +8,7 @@ class User {
   String? password;
 
   User(
-      {
-      this.firstName,
+      {this.firstName,
       this.lastName,
       this.dob,
       this.phonenumber,
@@ -18,7 +17,6 @@ class User {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'firstName': firstName,
       'lastName': lastName,
       'dob': dob,
@@ -34,6 +32,7 @@ class User {
         lastName: map['lastName'],
         dob: map['dob'],
         phonenumber: map['phonenumber'],
-        username: map['username']);
+        username: map['username'],
+        password: map['password']);
   }
 }

@@ -13,6 +13,15 @@ class SQLHelper {
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
+
+       await database.execute("""CREATE TABLE profile(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        name TEXT,
+        age TEXT,
+        relation TEXT,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+      """);
   }
   static Future<sql.Database> db() async {
     return sql.openDatabase(
