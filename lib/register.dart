@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/login.dart';
+import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
@@ -285,7 +287,22 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       password: passwordController.text.trim(),
       phonenumber: phoneNumberController.text.trim(),
     );
+
+DateTime currentDate= DateTime.now();
+
+//DateTime dateOfBirth= DateTime.parse(dobController.text.trim());
+
+//int age = currentDate.year -dateOfBirth.year;
+Profile newProf = Profile(
+  name: "${firstNameController.text} ${lastNameController.text}",
+  age:dobController.text.trim(),
+  relation: "Me"
+)
+
+;
+
     
     await UserHelper.createUser(newUser);
+    await ProfileHelper.createProfile(newProf);
   }
 }

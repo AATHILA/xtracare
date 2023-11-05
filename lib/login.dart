@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/home.dart';
+import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/register.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -117,6 +118,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   Future<List<Map<String, dynamic>>> validateUser(
       String username, String password) {
+
+        UserHelper.getUsers().then((value) => value.forEach((element) {  print(User.fromMap(element)); }));
     return UserHelper.checkUser(username, password);
   }
 }
