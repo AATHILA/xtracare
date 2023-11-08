@@ -8,8 +8,13 @@ class SharedPreferHelper {
     });
   }
 
-    static Future<dynamic> getData(String  key) async {
+  static Future<dynamic> getData(String key) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.get(key);
+  }
+
+  static Future<dynamic> removeData(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.remove(key);
   }
 }

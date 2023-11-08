@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
@@ -55,33 +57,26 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         _validate = false;
         validField = 'USERNAME';
         errMsg = "Username/Email is invalid";
-      }
-
-      else if (!ValidatorHelper.validateFields(
+      } else if (!ValidatorHelper.validateFields(
           phoneNumberController.text, 'TEXT_FIELD_NOT_EMPTY')) {
         _validate = false;
         validField = 'PHONE';
         errMsg = "PhoneNumber is required";
-      }
-      else if (!ValidatorHelper.validateFields(
+      } else if (!ValidatorHelper.validateFields(
           phoneNumberController.text, 'TEXT_FIELD_NOT_EMPTY')) {
         _validate = false;
         validField = 'PASS';
         errMsg = "Password is required";
-      }
-      else if (!ValidatorHelper.validateFields(
+      } else if (!ValidatorHelper.validateFields(
           phoneNumberController.text, 'TEXT_FIELD_NOT_EMPTY')) {
         _validate = false;
         validField = 'CONFIRMPASS';
         errMsg = "Confirm Password is required";
-      }
-      else if (passwordController.text!=confirmPasswordController.text) {
+      } else if (passwordController.text != confirmPasswordController.text) {
         _validate = false;
         validField = 'CONFIRMPASS';
         errMsg = "Confirm Password not match with password";
       }
-
-
     });
   }
 
@@ -89,8 +84,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     // showDatePicker is a pre-made funtion of Flutter
     showDatePicker(
             context: context,
-            initialDate:  DateTime(DateTime.now().year-18),
-            firstDate: DateTime(DateTime.now().year-80),
+            initialDate: DateTime(DateTime.now().year - 18),
+            firstDate: DateTime(DateTime.now().year - 80),
             lastDate: DateTime.now())
         .then((pickedDate) {
       if (pickedDate != null) {
@@ -201,10 +196,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             controller: phoneNumberController,
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.number,
-            decoration:  InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Phonenumber',
-               errorText: !_validate && validField == "PHONE" ? errMsg : null,
+              errorText: !_validate && validField == "PHONE" ? errMsg : null,
             ),
           ),
         ),
@@ -214,17 +209,18 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             obscureText: _hidePass,
             controller: passwordController,
             textInputAction: TextInputAction.next,
-            decoration:  InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Password',
-               errorText: !_validate && validField == "PASS" ? errMsg : null,
-              suffixIcon:IconButton(onPressed:(){
-                setState(() {
-                  _hidePass=!_hidePass;
-                });
-              } ,
-                icon: Icon(_hidePass?Icons.visibility_off:Icons.visibility))
-            ),
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+                errorText: !_validate && validField == "PASS" ? errMsg : null,
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _hidePass = !_hidePass;
+                      });
+                    },
+                    icon: Icon(
+                        _hidePass ? Icons.visibility_off : Icons.visibility))),
           ),
         ),
         Container(
@@ -233,10 +229,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             obscureText: true,
             textInputAction: TextInputAction.next,
             controller: confirmPasswordController,
-            decoration:  InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Confirm Password',
-               errorText: !_validate && validField == "CONFIRMPASS" ? errMsg : null,
+              errorText:
+                  !_validate && validField == "CONFIRMPASS" ? errMsg : null,
             ),
           ),
         ),
@@ -278,31 +275,27 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   }
 
   Future<void> _addUser() async {
-
     User newUser = User(
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
       username: usernameController.text.trim(),
-      dob:dobController.text.trim(),
+      dob: dobController.text.trim(),
       password: passwordController.text.trim(),
       phonenumber: phoneNumberController.text.trim(),
     );
 
-DateTime currentDate= DateTime.now();
+    DateTime currentDate = DateTime.now();
+    DateFormat format = DateFormat("dd/MM/yyyy");
+    DateTime dateOfBirth = format.parse(dobController.text.trim());
 
-//DateTime dateOfBirth= DateTime.parse(dobController.text.trim());
+    int age = currentDate.year - dateOfBirth.year;
+    Profile newProf = Profile(
+        name: "${firstNameController.text} ${lastNameController.text}",
+        age: age.toString(),
+        relation: "Me");
 
-//int age = currentDate.year -dateOfBirth.year;
-Profile newProf = Profile(
-  name: "${firstNameController.text} ${lastNameController.text}",
-  age:dobController.text.trim(),
-  relation: "Me"
-)
-
-;
-
-    
-    await UserHelper.createUser(newUser);
-    await ProfileHelper.createProfile(newProf);
+    Future<int> userId = UserHelper.createUser(newUser);
+    userId.then((value) =>
+        {newProf.userid = value, ProfileHelper.createProfile(newProf)});
   }
 }

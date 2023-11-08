@@ -22,6 +22,7 @@ class SQLHelper {
         name TEXT,
         age TEXT,
         relation TEXT,
+        userid TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       ''');
@@ -30,7 +31,7 @@ class SQLHelper {
     print(result);
   }
 
-  static Future<sql.Database> db() async {
+  static Future<sql.Database> db() {
     return sql.openDatabase(
       'pillremainder.db',
       version: 1,

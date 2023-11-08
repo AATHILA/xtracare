@@ -13,16 +13,14 @@ class HomeWidget extends StatefulWidget {
   State<HomeWidget> createState() => _HomeWidgetState();
 }
 
-
 class _HomeWidgetState extends State<HomeWidget> {
- User usr=User();
- var currentPage = DrawerSections.dashboard;
+  User usr = User();
+  var currentPage = DrawerSections.dashboard;
 
-@override
+  @override
   void initState() {
-  
     super.initState();
-      SharedPreferHelper.getData('login_session_username').then((username) => {
+    SharedPreferHelper.getData('login_session_username').then((username) => {
           UserHelper.getUser(username).then((value) => {
                 setState(() {
                   value.forEach((element) {
@@ -33,16 +31,16 @@ class _HomeWidgetState extends State<HomeWidget> {
         });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-     var container;
+    var container;
     if (currentPage == DrawerSections.dashboard) {
       container = DashboardWidget();
-   }  else if (currentPage == DrawerSections.profiles) {
+    } else if (currentPage == DrawerSections.profiles) {
       container = ProfilesWidget();
-   }  /* else if (currentPage == DrawerSections.events) {
+    }
+
+    /* else if (currentPage == DrawerSections.events) {
       container = EventsPage();
     } else if (currentPage == DrawerSections.notes) {
       container = NotesPage();
@@ -52,24 +50,22 @@ class _HomeWidgetState extends State<HomeWidget> {
       container = NotificationsPage();
     } else if (currentPage == DrawerSections.privacy_policy) {
       container = PrivacyPolicyPage();
-    } else if (currentPage == DrawerSections.send_feedback) {
-      container = SendFeedbackPage();
-    }*/
+    } */
+    else if (currentPage == DrawerSections.logout) {
+      SharedPreferHelper.removeData("login_session_username");
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 7, 53, 91),
         title: const Center(
-          child: Text("Pill Reminder",style: TextStyle(color: Colors.white)),
+          child: Text("Pill Reminder", style: TextStyle(color: Colors.white)),
         ),
       ),
       body: container,
       drawer: Drawer(
         child: SingleChildScrollView(
           child: Column(
-            children: [
-              MyHeaderDrawer(usr),
-              MyDrawerList()
-            ],
+            children: [MyHeaderDrawer(usr), MyDrawerList()],
           ),
         ),
       ),
@@ -97,6 +93,8 @@ class _HomeWidgetState extends State<HomeWidget> {
               currentPage == DrawerSections.settings ? true : false),
           menuItem(6, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
+          menuItem(7, "Logout", Icons.logout,
+              currentPage == DrawerSections.logout ? true : false),
         ],
       ),
     );
@@ -108,6 +106,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       child: InkWell(
         onTap: () {
           Navigator.pop(context);
+
           setState(() {
             if (id == 1) {
               currentPage = DrawerSections.dashboard;
@@ -121,8 +120,14 @@ class _HomeWidgetState extends State<HomeWidget> {
               currentPage = DrawerSections.settings;
             } else if (id == 6) {
               currentPage = DrawerSections.notifications;
-            } 
+            } else if (id == 7) {
+              currentPage = DrawerSections.logout;
+            }
           });
+          if (currentPage == DrawerSections.logout) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                'login', (Route<dynamic> route) => false);
+          }
         },
         child: Padding(
           padding: EdgeInsets.all(15.0),
@@ -153,14 +158,12 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 }
 
-
 enum DrawerSections {
   dashboard,
   profiles,
   events,
   notes,
   settings,
-  notifications
+  notifications,
+  logout
 }
-
-

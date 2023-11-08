@@ -1,0 +1,22 @@
+CREATE TABLE `user`(
+        `id` int unsigned  NOT NULL AUTO_INCREMENT ,
+        `firstName` VARCHAR(50),
+        `lastName` VARCHAR(50),
+        `dob` DATE NOT NULL,
+        `phonenumber` VARCHAR(15),
+        `username` VARCHAR(50),
+        `password` VARCHAR(50),
+        `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+       `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY(id)
+)
+
+	id = models.AutoField(primary_key=True)
+	firstName = models.CharField(max_length=50)
+    lastName = models.CharField(max_length=50)
+    dob=models.DateField()
+    phonenumber = models.CharField(max_length=15)
+	username = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
+	createdAt = models.DateTimeField(auto_now_add=True)
+    updatedOn = models.DateTimeField(auto_now=True)

@@ -1,13 +1,15 @@
+import 'dart:ffi';
+
 class Profile {
-  String? id;
+  int? id;
   String? name;
   String? age;
   String? relation;
-
-  Profile({this.id,this.name, this.age, this.relation});
+  int? userid;
+  Profile({this.id, this.name, this.age, this.relation, this.userid});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'name': name, 'age': age, 'relation': relation};
+    return {'name': name, 'age': age, 'relation': relation, 'userid': userid};
   }
 
   factory Profile.fromMap(Map<String, dynamic> map) {
@@ -16,6 +18,7 @@ class Profile {
       name: map['name'],
       age: map['age'],
       relation: map['relation'],
+      userid: int.parse(map['userid']),
     );
   }
 }
