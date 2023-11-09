@@ -5,6 +5,7 @@ import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/my_drawer_header.dart';
 import 'package:pill_reminder/profiles.dart';
+import 'package:pill_reminder/timeslot.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -38,11 +39,11 @@ class _HomeWidgetState extends State<HomeWidget> {
       container = DashboardWidget();
     } else if (currentPage == DrawerSections.profiles) {
       container = ProfilesWidget();
+    } else if (currentPage == DrawerSections.timeslot) {
+      container = TimeSlotWidget();
     }
-
-    /* else if (currentPage == DrawerSections.events) {
-      container = EventsPage();
-    } else if (currentPage == DrawerSections.notes) {
+    /*
+     else if (currentPage == DrawerSections.notes) {
       container = NotesPage();
     } else if (currentPage == DrawerSections.settings) {
       container = SettingsPage();
@@ -84,8 +85,8 @@ class _HomeWidgetState extends State<HomeWidget> {
               currentPage == DrawerSections.dashboard ? true : false),
           menuItem(2, "Profiles", Icons.person,
               currentPage == DrawerSections.profiles ? true : false),
-          menuItem(3, "Events", Icons.event,
-              currentPage == DrawerSections.events ? true : false),
+          menuItem(3, "Time Slot", Icons.timer,
+              currentPage == DrawerSections.timeslot ? true : false),
           menuItem(4, "Notes", Icons.notes,
               currentPage == DrawerSections.notes ? true : false),
           Divider(),
@@ -113,7 +114,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             } else if (id == 2) {
               currentPage = DrawerSections.profiles;
             } else if (id == 3) {
-              currentPage = DrawerSections.events;
+              currentPage = DrawerSections.timeslot;
             } else if (id == 4) {
               currentPage = DrawerSections.notes;
             } else if (id == 5) {
@@ -161,7 +162,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 enum DrawerSections {
   dashboard,
   profiles,
-  events,
+  timeslot,
   notes,
   settings,
   notifications,

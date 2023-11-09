@@ -26,21 +26,24 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
 
   void dataRefresh() {
     List<Profile> tempList = [];
-    SharedPreferHelper.getData("login_session_userid").then((value) => {
-          setState(() {
-            userid = int.parse(value);
-            ProfileHelper.getProfile(userid).then((value1) => {
-                  value1.forEach((element) {
-                    Profile temp = Profile.fromMap(element);
+    SharedPreferHelper.getData("login_session_userid").then((value) {
+      setState(() {
+        userid = int.parse(value);
+      });
+      ProfileHelper.getProfile(userid).then((value1) {
+        value1.forEach((element) {
+          Profile temp = Profile.fromMap(element);
 
-                    tempList.add(temp);
-                  }),
-                  SharedPreferHelper.getData("active_profile")
-                      .then((value2) => {profileactive = int.parse(value2)}),
-                  list = tempList
-                });
-          })
+          tempList.add(temp);
         });
+        setState(() {
+          SharedPreferHelper.getData("active_profile")
+              .then((value2) => {profileactive = int.parse(value2)});
+
+          list = tempList;
+        });
+      });
+    });
   }
 
   @override

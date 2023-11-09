@@ -5,7 +5,12 @@ import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
-class ProfileAddWidget extends StatelessWidget {
+class ProfileAddWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ProfileAddWidgetState();
+}
+
+class _ProfileAddWidgetState extends State<ProfileAddWidget> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   String? selectedValue = null;
@@ -13,23 +18,25 @@ class ProfileAddWidget extends StatelessWidget {
   String validField = '', errMsg = '';
 
   void validateFields() {
-    _validate = true;
-    if (!ValidatorHelper.validateFields(
-        fullNameController.text, 'TEXT_FIELD_NOT_EMPTY')) {
-      _validate = false;
-      validField = 'FULL';
-      errMsg = "Full Name is required";
-    } else if (!ValidatorHelper.validateFields(
-        ageController.text, 'TEXT_FIELD_NOT_EMPTY')) {
-      _validate = false;
-      validField = 'LAST';
-      errMsg = "Last Name is required";
-    } else if (!ValidatorHelper.validateFields(
-        selectedValue ?? '', 'TEXT_FIELD_NOT_EMPTY')) {
-      _validate = false;
-      validField = 'RELATION';
-      errMsg = "Relation is required";
-    }
+    setState(() {
+      _validate = true;
+      if (!ValidatorHelper.validateFields(
+          fullNameController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'FULL';
+        errMsg = "Full Name is required";
+      } else if (!ValidatorHelper.validateFields(
+          ageController.text, 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'LAST';
+        errMsg = "Last Name is required";
+      } else if (!ValidatorHelper.validateFields(
+          selectedValue ?? '', 'TEXT_FIELD_NOT_EMPTY')) {
+        _validate = false;
+        validField = 'RELATION';
+        errMsg = "Relation is required";
+      }
+    });
   }
 
   @override

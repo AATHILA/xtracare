@@ -13,4 +13,12 @@ class CommonData {
     ];
     return menuItems;
   }
+
+  static List<DropdownMenuItem<String>> get dropdownTimeStotItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("DAILY"), value: "DAILY"),
+      DropdownMenuItem(child: Text("EVERY"), value: "EVERY"),
+    ];
+    return menuItems;
+  }
 }

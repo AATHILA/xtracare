@@ -6,6 +6,8 @@ class SQLHelper {
     Batch batch = database.batch();
     batch.execute("DROP TABLE IF EXISTS user");
     batch.execute("DROP TABLE IF EXISTS profile");
+    batch.execute("DROP TABLE IF EXISTS timeslot");
+    batch.execute("DROP TABLE IF EXISTS timeslot_times");
     batch.execute('''CREATE TABLE user(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         firstName TEXT,
@@ -14,7 +16,9 @@ class SQLHelper {
         phonenumber TEXT,
         username TEXT,
         password TEXT,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
       )
       ''');
     batch.execute('''CREATE TABLE profile(
@@ -23,7 +27,30 @@ class SQLHelper {
         age TEXT,
         relation TEXT,
         userid TEXT,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
+      )
+      ''');
+
+    batch.execute('''CREATE TABLE timeslot(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        name TEXT,
+        type TEXT,
+        nooftimes TEXT,
+        userid TEXT,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
+      )
+      ''');
+    batch.execute('''CREATE TABLE timeslot_times(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        time TEXT,
+        timeslotid INTEGER,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
       )
       ''');
 
