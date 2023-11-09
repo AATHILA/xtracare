@@ -8,6 +8,7 @@ class SQLHelper {
     batch.execute("DROP TABLE IF EXISTS profile");
     batch.execute("DROP TABLE IF EXISTS timeslot");
     batch.execute("DROP TABLE IF EXISTS timeslot_times");
+    batch.execute("DROP TABLE IF EXISTS medicine");
     batch.execute('''CREATE TABLE user(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         firstName TEXT,
@@ -48,6 +49,18 @@ class SQLHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         time TEXT,
         timeslotid INTEGER,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
+      )
+      ''');
+
+    batch.execute('''CREATE TABLE medicine(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        name TEXT,
+		    description TEXT,
+        side_effects TEXT,
+		    category TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         sync_status TEXT DEFAULT 'PI'

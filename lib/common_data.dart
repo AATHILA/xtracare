@@ -21,4 +21,12 @@ class CommonData {
     ];
     return menuItems;
   }
+
+  static List<DropdownMenuItem<String>> get dropdownMedicineCategoryItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(child: Text("PILL"), value: "PILL"),
+      const DropdownMenuItem(child: Text("SOLUTION"), value: "SOLUTION"),
+    ];
+    return menuItems;
+  }
 }

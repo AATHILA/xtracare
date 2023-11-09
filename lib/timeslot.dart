@@ -5,6 +5,8 @@ import 'package:pill_reminder/model/timeslot.dart';
 import 'package:pill_reminder/timeslotadd.dart';
 
 class TimeSlotWidget extends StatefulWidget {
+  const TimeSlotWidget({super.key});
+
   @override
   State<StatefulWidget> createState() => _TimeSlotWidgetState();
 }
@@ -115,7 +117,7 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
                               ),
                               child: Text(ele.time ?? "",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 14))))
+                                      color: Colors.white, fontSize: 9))))
                   ],
                 )),
           ),
