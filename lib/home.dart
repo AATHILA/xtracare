@@ -5,6 +5,7 @@ import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/medicine.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/my_drawer_header.dart';
+import 'package:pill_reminder/prescription.dart';
 import 'package:pill_reminder/profiles.dart';
 import 'package:pill_reminder/timeslot.dart';
 
@@ -44,9 +45,9 @@ class _HomeWidgetState extends State<HomeWidget> {
       container = TimeSlotWidget();
     } else if (currentPage == DrawerSections.medicine) {
       container = MedicineWidget();
-    } /* else if (currentPage == DrawerSections.settings) {
-      container = SettingsPage();
-    } else if (currentPage == DrawerSections.notifications) {
+    } else if (currentPage == DrawerSections.prescription) {
+      container = PrescriptionWidget();
+    } /* else if (currentPage == DrawerSections.notifications) {
       container = NotificationsPage();
     } else if (currentPage == DrawerSections.privacy_policy) {
       container = PrivacyPolicyPage();
@@ -86,11 +87,11 @@ class _HomeWidgetState extends State<HomeWidget> {
               currentPage == DrawerSections.profiles ? true : false),
           menuItem(3, "Time Slot", Icons.timer,
               currentPage == DrawerSections.timeslot ? true : false),
-          menuItem(4, "Medicines", Icons.medication,
+          menuItem(4, "Medicines", Icons.medical_information,
               currentPage == DrawerSections.medicine ? true : false),
+          menuItem(5, "Prescription", Icons.medication,
+              currentPage == DrawerSections.prescription ? true : false),
           Divider(),
-          menuItem(5, "Settings", Icons.settings_outlined,
-              currentPage == DrawerSections.settings ? true : false),
           menuItem(6, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
           menuItem(7, "Logout", Icons.logout,
@@ -117,7 +118,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             } else if (id == 4) {
               currentPage = DrawerSections.medicine;
             } else if (id == 5) {
-              currentPage = DrawerSections.settings;
+              currentPage = DrawerSections.prescription;
             } else if (id == 6) {
               currentPage = DrawerSections.notifications;
             } else if (id == 7) {
@@ -163,7 +164,7 @@ enum DrawerSections {
   profiles,
   timeslot,
   medicine,
-  settings,
+  prescription,
   notifications,
   logout
 }

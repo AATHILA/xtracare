@@ -26,4 +26,8 @@ class Medicine {
       category: map['category'],
     );
   }
+
+  bool isEqual(Medicine s) {
+    return (s.id == id);
+  }
 }

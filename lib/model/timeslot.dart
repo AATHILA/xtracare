@@ -26,6 +26,10 @@ class Timeslot {
       times: map['times'],
     );
   }
+
+  isEqual(Timeslot s) {
+    return s.id == this.id;
+  }
 }
 
 class TimeslotTimes {
