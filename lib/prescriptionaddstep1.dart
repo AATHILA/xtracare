@@ -1,10 +1,15 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/common_data.dart';
 import 'package:pill_reminder/db/medicine_helper.dart';
+import 'package:pill_reminder/db/prescription_helper.dart';
+import 'package:pill_reminder/db/schedules_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/db/timeslot_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
+import 'package:pill_reminder/model/prescription.dart';
+import 'package:pill_reminder/model/schedules.dart';
 import 'package:pill_reminder/model/timeslot.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
@@ -27,6 +32,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   String selectedDose = '';
   int selectedTimeslot = 0;
   int userID = 0;
+  int profile_id = 0;
 
   bool _validate = true;
   String validField = '', errMsg = '';
@@ -70,6 +76,8 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
     setState(() {
       SharedPreferHelper.getData('login_session_userid')
           .then((value) => {userID = int.parse(value)});
+      SharedPreferHelper.getData('active_profile')
+          .then((value) => {profile_id = int.parse(value)});
     });
   }
 
@@ -93,15 +101,85 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
               });
             }
           },
-          onStepContinue: () {
+          onStepContinue: () async {
             final isLastStep = _currentStep == getSteps().length - 1;
             if (isLastStep) {
               validateFields();
               if (_validate == false) return;
+              Prescription pp = Prescription(
+                  prescribed_by: _prescribedByController.text.trim(),
+                  start_date: _fromDateController.text.trim(),
+                  end_date: _toDateController.text.trim(),
+                  consultation_date: _consultationDateController.text.trim(),
+                  profile_id: profile_id);
+
+              await PrescriptionHelper.createPrescription(pp)
+                  .then((pvalue) async {
+                Medication newMed = Medication(
+                    prescription_id: pvalue,
+                    timeslot_id: selectedTimeslot,
+                    dose: selectedDose,
+                    medicine_id: selectedMedicine);
+                await MedicationHelper.createMedication(newMed)
+                    .then((md) async {
+                  DateFormat format = DateFormat("dd/MM/yyyy");
+                  DateTime startDate =
+                      format.parse(_fromDateController.text.trim());
+                  DateTime endDate =
+                      format.parse(_toDateController.text.trim());
+
+                  List<DateTime> dates =
+                      CommonData.getDaysInBetween(startDate, endDate);
+
+                  for (var dt in dates) {
+                    await TimeSlotTimesHelper.getTimeSlotById(
+                            newMed.timeslot_id ?? 0)
+                        .then((timeslots) async {
+                      for (var timestr in timeslots) {
+                        await SchedulesHelper.getSchedulr(format.format(dt),
+                                TimeslotTimes.fromMap(timestr).time ?? '')
+                            .then((schedule1) async {
+                          if (schedule1.isNotEmpty) {
+                            int sid = 0;
+                            for (var ele in schedule1) {
+                              sid = ele['id'];
+                            }
+
+                            ScheduleItem sti = ScheduleItem(
+                                schedulesId: sid,
+                                medicationId: md,
+                                status: 'PENDING');
+                            await SchedulesItemHelper.createScheduleItems(sti);
+                          } else {
+                            Schedules sttt = Schedules(
+                                time: TimeslotTimes.fromMap(timestr).time,
+                                scheduleDate: format.format(dt),
+                                snooze: 0,
+                                scheduleStatus: 'PENDING');
+                            await SchedulesHelper.createSchedule(sttt)
+                                .then((sss) async {
+                              ScheduleItem sti = ScheduleItem(
+                                  schedulesId: sss,
+                                  medicationId: md,
+                                  status: 'PENDING');
+                              await SchedulesItemHelper.createScheduleItems(
+                                  sti);
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+
+                  Navigator.pop(context, true);
+                });
+              });
+
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(title: Text("Prescription Created"));
+                    return const AlertDialog(
+                        title: Text("Prescription Created"));
                   });
             } else {
               setState(() {

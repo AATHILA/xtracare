@@ -19,6 +19,7 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   User usr = User();
   var currentPage = DrawerSections.dashboard;
+  var titleApp = 'Pill Reminder';
 
   @override
   void initState() {
@@ -58,8 +59,8 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 7, 53, 91),
-        title: const Center(
-          child: Text("Pill Reminder", style: TextStyle(color: Colors.white)),
+        title: Center(
+          child: Text(titleApp, style: TextStyle(color: Colors.white)),
         ),
       ),
       body: container,
@@ -111,16 +112,22 @@ class _HomeWidgetState extends State<HomeWidget> {
           setState(() {
             if (id == 1) {
               currentPage = DrawerSections.dashboard;
+              titleApp = 'Dashboard';
             } else if (id == 2) {
               currentPage = DrawerSections.profiles;
+              titleApp = 'Profiles';
             } else if (id == 3) {
               currentPage = DrawerSections.timeslot;
+              titleApp = 'Timeslots';
             } else if (id == 4) {
               currentPage = DrawerSections.medicine;
+              titleApp = 'Medicine';
             } else if (id == 5) {
               currentPage = DrawerSections.prescription;
+              titleApp = 'Prescription';
             } else if (id == 6) {
               currentPage = DrawerSections.notifications;
+              titleApp = 'Notification';
             } else if (id == 7) {
               currentPage = DrawerSections.logout;
             }

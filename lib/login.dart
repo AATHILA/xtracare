@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
-import 'package:pill_reminder/home.dart';
 import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/register.dart';
 import 'package:pill_reminder/db/user_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});

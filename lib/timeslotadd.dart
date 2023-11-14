@@ -24,7 +24,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
   TextEditingController timeslotNDayController = TextEditingController();
 
   final List<TextEditingController> times = [];
-  DateFormat dateFormat = DateFormat("HH:mm aa");
+  DateFormat dateFormat = DateFormat("hh:mm aa");
   Future<void> _show(i) async {
     final TimeOfDay? result = await showTimePicker(
         context: context,
@@ -37,7 +37,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
           localizations.formatTimeOfDay(result, alwaysUse24HourFormat: false);
       if (formattedTime != null) {
         setState(() {
-          times[i].text = formattedTime;
+          times[i].text = dateFormat.format(dateFormat.parse(formattedTime));
         });
       }
     }
