@@ -73,6 +73,7 @@ class _MedicineWidgetState extends State<MedicineWidget> {
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: const BorderSide())))),
+                            foundlist.isNotEmpty?      
                   ListView.builder(
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),
@@ -81,7 +82,15 @@ class _MedicineWidgetState extends State<MedicineWidget> {
                         return Container(
                           child: makeCard(foundlist[index]),
                         );
-                      })
+                        }):
+                      Container(
+                         height: 300,
+                child: Center(
+                    child: const Text(
+                  'No Medicines added',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )))
+
                 ]))));
   }
 

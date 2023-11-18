@@ -54,7 +54,9 @@ class _PrescriptionWidgetState extends State<PrescriptionWidget> {
         },
         child: const Icon(Icons.add),
       ),
-      body: Container(
+      body:
+      plist.isNotEmpty? 
+      Container(
           child: ListView.builder(
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
@@ -63,7 +65,14 @@ class _PrescriptionWidgetState extends State<PrescriptionWidget> {
                 return Container(
                   child: makeCard(plist[index]),
                 );
-              })),
+              }))
+              :Container(
+                         height: 300,
+                child: Center(
+                    child: const Text(
+                  'No Prescriptions added',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )))
     );
   }
 
