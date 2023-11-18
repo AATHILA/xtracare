@@ -8,6 +8,7 @@ import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/my_drawer_header.dart';
 import 'package:pill_reminder/notification_details.dart';
 import 'package:pill_reminder/notification_helper.dart';
+import 'package:pill_reminder/notification_settings.dart';
 import 'package:pill_reminder/prescription.dart';
 import 'package:pill_reminder/profiles.dart';
 import 'package:pill_reminder/timeslot.dart';
@@ -63,9 +64,9 @@ class _HomeWidgetState extends State<HomeWidget> {
       container = const MedicineWidget();
     } else if (currentPage == DrawerSections.prescription) {
       container = const PrescriptionWidget();
-    } /* else if (currentPage == DrawerSections.notifications) {
-      container = NotificationsPage();
-    } else if (currentPage == DrawerSections.privacy_policy) {
+    } else if (currentPage == DrawerSections.notifications) {
+      container = const NotificationSettingsWidget();
+    } /* else if (currentPage == DrawerSections.privacy_policy) {
       container = PrivacyPolicyPage();
     } */
     else if (currentPage == DrawerSections.logout) {
