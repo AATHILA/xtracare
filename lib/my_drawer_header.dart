@@ -11,21 +11,16 @@ class MyHeaderDrawer extends StatefulWidget {
   State<StatefulWidget> createState() => _MyHeaderState();
 }
 
-
-
 class _MyHeaderState extends State<MyHeaderDrawer> {
-  
-
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromARGB(255, 7, 53, 91),
+      color: Colors.black,
       width: double.infinity,
       height: 200,
       padding: EdgeInsets.only(top: 20.0),
@@ -41,15 +36,15 @@ class _MyHeaderState extends State<MyHeaderDrawer> {
                 image: AssetImage('assets/images/profile.png'),
               ),
             ),
-          ), Container(
-            padding: EdgeInsets.only(bottom:10),
-            child:
+          ),
+          Container(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Text(
+                widget.user.firstName!,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              )),
           Text(
-            widget.user.firstName!,
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          )),
-          Text(
-             widget.user.username!,
+            widget.user.username!,
             style: TextStyle(
               color: Colors.grey[200],
               fontSize: 14,

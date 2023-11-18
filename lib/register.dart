@@ -1,10 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/db/notification_settings_helper.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/login.dart';
+import 'package:pill_reminder/model/notification_settings.dart';
 import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/validate_helper.dart';
@@ -118,16 +118,17 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     return Scaffold(
         body: ListView(
       children: <Widget>[
-        Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Pill Reminder',
-              style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
-            )),
+        Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/xtracare.png'),
+                  ),
+                ))),
         Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
@@ -143,7 +144,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             textCapitalization: TextCapitalization.words,
             autofocus: true,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: 'First Name',
               errorText: !_validate && validField == "FIRST" ? errMsg : null,
             ),
@@ -156,7 +157,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             textInputAction: TextInputAction.next,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: 'Last Name',
               errorText: !_validate && validField == "LAST" ? errMsg : null,
             ),
@@ -170,10 +171,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             focusNode: focus,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: 'Date of Birth',
               errorText: !_validate && validField == "DOB" ? errMsg : null,
-              suffixIcon: Icon(Icons.calendar_today),
+              suffixIcon: const Icon(Icons.calendar_today),
             ),
             onTap: () => {_presentDatePicker()},
           ),
@@ -184,7 +185,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             controller: usernameController,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: 'Username/Email',
               errorText: !_validate && validField == "USERNAME" ? errMsg : null,
             ),
@@ -197,7 +198,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: 'Phonenumber',
               errorText: !_validate && validField == "PHONE" ? errMsg : null,
             ),
@@ -210,7 +211,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             controller: passwordController,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 labelText: 'Password',
                 errorText: !_validate && validField == "PASS" ? errMsg : null,
                 suffixIcon: IconButton(
@@ -230,7 +231,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             textInputAction: TextInputAction.next,
             controller: confirmPasswordController,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               labelText: 'Confirm Password',
               errorText:
                   !_validate && validField == "CONFIRMPASS" ? errMsg : null,
@@ -295,7 +296,13 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         relation: "Me");
 
     Future<int> userId = UserHelper.createUser(newUser);
-    userId.then((value) =>
-        {newProf.userid = value, ProfileHelper.createProfile(newProf)});
+    userId.then((value) async {
+      newProf.userid = value;
+      await ProfileHelper.createProfile(newProf).then((profileId) {
+        NotificationSettings newStt = NotificationSettings(
+            profileId: profileId, snooze: 10, alarmSound: 'alarm1');
+        NotificationSettingsHelper.createNotitificationSettings(newStt);
+      });
+    });
   }
 }

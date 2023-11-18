@@ -28,7 +28,7 @@ class Timeslot {
   }
 
   isEqual(Timeslot s) {
-    return s.id == this.id;
+    return s.id == id;
   }
 }
 

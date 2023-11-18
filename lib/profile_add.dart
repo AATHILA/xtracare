@@ -6,6 +6,8 @@ import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
 class ProfileAddWidget extends StatefulWidget {
+  const ProfileAddWidget({super.key});
+
   @override
   State<StatefulWidget> createState() => _ProfileAddWidgetState();
 }
@@ -13,7 +15,7 @@ class ProfileAddWidget extends StatefulWidget {
 class _ProfileAddWidgetState extends State<ProfileAddWidget> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
-  String? selectedValue = null;
+  String? selectedValue;
   bool _validate = true;
   String validField = '', errMsg = '';
 
@@ -50,7 +52,7 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
             await _addProfile()
                 .then((value) => {if (value) Navigator.pop(context, true)});
           },
-          child: Icon(Icons.save),
+          child: const Icon(Icons.save),
         ),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 7, 53, 91),
@@ -66,7 +68,7 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
                 child: TextField(
                   controller: fullNameController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Full Name',
                     errorText:
                         !_validate && validField == "FULL" ? errMsg : null,
@@ -78,7 +80,7 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
                 child: TextField(
                   controller: ageController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Age',
                     errorText:
                         !_validate && validField == "AGE" ? errMsg : null,
@@ -88,12 +90,12 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
               ),
               Container(
                   padding:
-                      EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+                      const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
                   child: FormField<String>(
                     builder: (FormFieldState<String> state) {
                       return InputDecorator(
                         decoration: InputDecoration(
-                            errorStyle: TextStyle(
+                            errorStyle: const TextStyle(
                                 color: Colors.redAccent, fontSize: 16.0),
                             hintText: 'Select Relation',
                             errorText: !_validate && validField == "RELATION"

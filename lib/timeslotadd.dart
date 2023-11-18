@@ -13,7 +13,7 @@ class TimeSlotAddWidget extends StatefulWidget {
 }
 
 class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
-  String? selectedValue = null;
+  String? selectedValue;
   bool _validate = true;
   bool _enabled = false;
   int userID = 0;
@@ -35,12 +35,10 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
     if (result != null) {
       String formattedTime =
           localizations.formatTimeOfDay(result, alwaysUse24HourFormat: false);
-      if (formattedTime != null) {
-        setState(() {
-          times[i].text = dateFormat.format(dateFormat.parse(formattedTime));
-        });
-      }
-    }
+      setState(() {
+        times[i].text = dateFormat.format(dateFormat.parse(formattedTime));
+      });
+        }
   }
 
   @override
@@ -98,7 +96,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
           if (!ValidatorHelper.validateFields(
               times[i].text ?? '', 'TEXT_FIELD_NOT_EMPTY')) {
             _validate = false;
-            validField = 'TIME${i}';
+            validField = 'TIME$i';
             errMsg = "Time is required";
             break;
           }
@@ -134,7 +132,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
             if (_validate == false) return;
             await _addTiming();
           },
-          child: Icon(Icons.save),
+          child: const Icon(Icons.save),
         ),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 7, 53, 91),
@@ -150,7 +148,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
               child: TextField(
                 controller: timeslotNameController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelText: 'Time Slot Name',
                   errorText: !_validate && validField == "TIMESLOTNAME"
                       ? errMsg
@@ -163,12 +161,12 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
               Flexible(
                   child: Container(
                 padding:
-                    EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+                    const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
                 child: FormField<String>(
                   builder: (FormFieldState<String> state) {
                     return InputDecorator(
                       decoration: InputDecoration(
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                               color: Colors.redAccent, fontSize: 16.0),
                           hintText: 'Select Occurance',
                           errorText: !_validate && validField == "REPEAT"
@@ -206,7 +204,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
                         enabled: _enabled,
                         controller: timeslotNDayController,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                           labelText: 'Days',
                           errorText: !_validate && validField == "TIMESLOTDAY"
                               ? errMsg
@@ -215,13 +213,13 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
                       )))
             ],
           ),
-          Divider(thickness: 1),
+          const Divider(thickness: 1),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text("Timings"),
+            const Text("Timings"),
             Container(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               alignment: Alignment.centerRight,
-              child: InkWell(child: Icon(Icons.add), onTap: () => {_addTime()}),
+              child: InkWell(child: const Icon(Icons.add), onTap: () => {_addTime()}),
             )
           ]),
           for (int i = 0; i < times.length; i++)
@@ -234,11 +232,11 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
                   controller: times[i],
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Select Time',
-                    suffixIcon: Icon(Icons.timer),
+                    suffixIcon: const Icon(Icons.timer),
                     errorText:
-                        !_validate && validField == "TIME${i}" ? errMsg : null,
+                        !_validate && validField == "TIME$i" ? errMsg : null,
                   ),
                   onTap: () => {_show(i)},
                 ),
@@ -247,7 +245,7 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
                   child: Container(
                 padding: const EdgeInsets.all(10),
                 child: InkWell(
-                    child: Icon(Icons.delete), onTap: () => {_removeTime(i)}),
+                    child: const Icon(Icons.delete), onTap: () => {_removeTime(i)}),
               ))
             ])
         ]))));

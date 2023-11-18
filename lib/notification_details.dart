@@ -1,39 +1,30 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:icons_flutter/icons_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pill_reminder/db/schedules_helper.dart';
-import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/dashboard.dart';
-import 'package:pill_reminder/notification_details.dart';
-import 'package:pill_reminder/notification_helper.dart';
 
-class DashboardWidget extends StatefulWidget {
-  const DashboardWidget({super.key});
+class NotificationDetailsWidget extends StatefulWidget {
+  final String payload;
+  const NotificationDetailsWidget(this.payload);
 
   @override
-  State<DashboardWidget> createState() => _DashboardWidgetState();
+  State<NotificationDetailsWidget> createState() =>
+      NotificationDetailsWidgetState();
 }
 
-class _DashboardWidgetState extends State<DashboardWidget> {
+class NotificationDetailsWidgetState extends State<NotificationDetailsWidget> {
   List<Dashboard> listToShow = [];
-  String date = '';
-  int profileID = 0;
+
   @override
   void initState() {
     super.initState();
-
-    date = DateFormat('dd/MM/yyyy').format(DateTime.now());
     dataRefresh();
   }
 
   dataRefresh() async {
-    await SharedPreferHelper.getData('active_profile').then((value) {
-      profileID = int.parse(value);
-    });
-
-    await SchedulesHelper.getSchedulesToday(date, profileID).then((value) {
+    await SchedulesHelper.getSchedulesById(int.parse(widget.payload))
+        .then((value) {
       setState(() {
         listToShow = value;
       });
@@ -42,72 +33,108 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(children: [
-        EasyDateTimeLine(
-          initialDate: DateTime.now(),
-          onDateChange: (selectedDate) {
-            setState(() {
-              date = DateFormat('dd/MM/yyyy').format(selectedDate);
-
-              dataRefresh();
-            });
-          },
-          activeColor: Color.fromARGB(255, 177, 155, 255),
-          headerProps: const EasyHeaderProps(
-            selectedDateFormat: SelectedDateFormat.fullDateDMonthAsStrY,
-          ),
-          dayProps: const EasyDayProps(
-            height: 56.0,
-            width: 56.0,
-            dayStructure: DayStructure.dayNumDayStr,
-            inactiveDayStyle: DayStyle(
-              borderRadius: 48.0,
-              dayNumStyle: TextStyle(
-                fontSize: 18.0,
-              ),
-            ),
-            activeDayStyle: DayStyle(
-              dayNumStyle: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        listToShow.isNotEmpty
-            ? ListView.builder(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                itemCount: listToShow.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    child: makeCard(listToShow[index]),
-                  );
-                })
-            : Container(
-                height: 300,
-                child: Center(
-                    child: const Text(
-                  'No Medication Today',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                )))
-      ]),
-    ));
+    return Container(
+        margin: EdgeInsets.only(top: 18),
+        color: Colors.grey,
+        alignment: Alignment.center,
+        child: Material(
+            color: Colors.transparent,
+            child: ListView(shrinkWrap: true, children: [
+              Card(
+                color: Colors.white,
+                elevation: 8,
+                child: Container(
+                    decoration: const BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                                width: 5.0,
+                                color: Color.fromARGB(59, 246, 238, 238)))),
+                    child: Column(children: [
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Icon(
+                                          Icons.close,
+                                          color: Colors.black,
+                                        ))),
+                              ],
+                            )
+                          ]),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ClampingScrollPhysics(),
+                                itemCount: listToShow.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    child: makeListTile(listToShow[index]),
+                                  );
+                                }),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the alert box
+                                    },
+                                    child: Column(children: [
+                                      Icon(
+                                        Icons.done,
+                                        color: Colors.black,
+                                      ),
+                                      Text('Taken',
+                                          style: TextStyle(color: Colors.black))
+                                    ]),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the alert box
+                                    },
+                                    child: Column(children: [
+                                      Icon(
+                                        Icons.snooze,
+                                        color: Colors.black,
+                                      ),
+                                      Text('Snooze',
+                                          style: TextStyle(color: Colors.black))
+                                    ]),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the alert box
+                                    },
+                                    child: Column(children: [
+                                      Icon(
+                                        Icons.skip_next,
+                                        color: Colors.black,
+                                      ),
+                                      Text('Skip',
+                                          style: TextStyle(color: Colors.black))
+                                    ]),
+                                  )
+                                ])
+                          ]),
+                    ])),
+              )
+            ])));
   }
 
   int indx = 0;
-  Card makeCard(Dashboard dashboard) => Card(
-        margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 6.0),
-        child: Container(
-          decoration: const BoxDecoration(
-              border: Border(
-                  right: BorderSide(
-                      width: 5.0, color: Color.fromARGB(59, 246, 238, 238)))),
-          child: makeListTile(dashboard),
-        ),
-      );
 
   ListTile makeListTile(Dashboard dashboard) => ListTile(
         contentPadding:
@@ -201,12 +228,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 ))
         ]),
         onTap: () async {
-          await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      NotificationDetailsWidget(dashboard.id.toString())));
-
           //   _showAlertBox(context, dashboard.id ?? 0);
         },
       );

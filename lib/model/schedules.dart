@@ -4,6 +4,7 @@ class Schedules {
   String? scheduleDate;
   String? time;
   int? snooze;
+  int? profileId;
   String? scheduleStatus;
 
   Schedules(
@@ -11,6 +12,7 @@ class Schedules {
       this.scheduleDate,
       this.time,
       this.snooze,
+      this.profileId,
       this.scheduleStatus});
 
   Map<String, dynamic> toMap() {
@@ -19,6 +21,7 @@ class Schedules {
       'schedule_date': scheduleDate,
       'time': time,
       'snooze': snooze,
+      'profile_id': profileId,
       'schedule_status': scheduleStatus
     };
   }
@@ -29,6 +32,7 @@ class Schedules {
       scheduleDate: map['schedule_date'],
       time: map['time'],
       snooze: map['snooze'],
+      profileId: map['profile_id'],
       scheduleStatus: map['schedule_status'],
     );
   }

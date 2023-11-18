@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:pill_reminder/constant.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/profile.dart';
@@ -20,23 +22,23 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
-            child: const Text(
-              'Pill Reminder',
-              style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 30),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              image: DecorationImage(
+                image: AssetImage('assets/images/xtracare.png'),
+              ),
             )),
         Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
             child: const Text(
-              'Login User',
+              'Please sign in',
               style: TextStyle(fontSize: 20),
             )),
         Container(
@@ -69,6 +71,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           ),
         ),
         Container(
+            width: double.infinity,
             height: 50,
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: ElevatedButton(
@@ -83,7 +86,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginWidget()),
+                                      builder: (context) =>
+                                          const LoginWidget()),
                                   ModalRoute.withName("/home"),
                                 ),
                                 value.forEach((element) {

@@ -5,6 +5,8 @@ import 'package:pill_reminder/model/medicine.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
 class MedicineAddWidget extends StatefulWidget {
+  const MedicineAddWidget({super.key});
+
   @override
   State<StatefulWidget> createState() => _MedicineAddWidgetState();
 }
@@ -49,7 +51,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
             if (_validate == false) return;
             await _addMedicine();
           },
-          child: Icon(Icons.save),
+          child: const Icon(Icons.save),
         ),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 7, 53, 91),
@@ -64,7 +66,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
               child: TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelText: 'Name',
                   errorText: !_validate && validField == "NAME" ? errMsg : null,
                 ),
@@ -76,7 +78,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
                 controller: descriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelText: 'Description',
                   errorText: !_validate && validField == "DESC" ? errMsg : null,
                 ),
@@ -87,7 +89,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
               child: TextField(
                 controller: sideeffectController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelText: 'Side Effects',
                   errorText:
                       !_validate && validField == "SIDEEFFECT" ? errMsg : null,
@@ -96,12 +98,12 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
             ),
             Container(
                 padding:
-                    EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+                    const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
                 child: FormField<String>(
                   builder: (FormFieldState<String> state) {
                     return InputDecorator(
                       decoration: InputDecoration(
-                          errorStyle: TextStyle(
+                          errorStyle: const TextStyle(
                               color: Colors.redAccent, fontSize: 16.0),
                           hintText: 'Select',
                           errorText: !_validate && validField == "CATEGORY"

@@ -81,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.6"
+  easy_date_timeline:
+    dependency: "direct main"
+    description:
+      name: easy_date_timeline
+      sha256: "084450183350ea8f3e658b2b073b691c8d170c5c64eeb32c6cda3c32c78aba6f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   email_validator:
     dependency: "direct main"
     description:
@@ -200,6 +208,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  icons_flutter:
+    dependency: "direct main"
+    description:
+      name: icons_flutter
+      sha256: def6e6a79709a5ed62e564005ab34bf39b4cc6377604c4422af6397941da4607
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   intl:
     dependency: "direct main"
     description:
@@ -328,6 +344,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.6"
+  rxdart:
+    dependency: "direct main"
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -15,10 +15,10 @@ class PrescriptionHelper {
   }
 
   static Future<List<Map<String, dynamic>>> getPrescriptionByprofileid(
-      int profile_id) async {
+      int profileId) async {
     final db = await SQLHelper.db();
     return db.query('prescription',
-        where: "profile_id = ? ", whereArgs: [profile_id], orderBy: "id");
+        where: "profile_id = ? ", whereArgs: [profileId], orderBy: "id");
   }
 
   static Future<List<Map<String, dynamic>>> getTimeSlotById(int id) async {
@@ -27,9 +27,9 @@ class PrescriptionHelper {
         where: "id = ? ", whereArgs: [id], orderBy: "id", limit: 1);
   }
 
-  static Future<List<Prescription>> queryAll(int profile_id) async {
+  static Future<List<Prescription>> queryAll(int profileId) async {
     List<Prescription> list = [];
-    await getPrescriptionByprofileid(profile_id).then((value) async {
+    await getPrescriptionByprofileid(profileId).then((value) async {
       for (int i = 0; i < value.length; i++) {
         Prescription tt = Prescription.fromMap(value[i]);
         List<Medication> medications = [];
@@ -71,11 +71,11 @@ class MedicationHelper {
   }
 
   static Future<List<Map<String, dynamic>>> getMedicationById(
-      int prescription_id) async {
+      int prescriptionId) async {
     final db = await SQLHelper.db();
     return db.query('medication',
         where: "prescription_id = ? ",
-        whereArgs: [prescription_id],
+        whereArgs: [prescriptionId],
         orderBy: "id");
   }
 }

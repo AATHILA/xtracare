@@ -43,7 +43,6 @@ class TimeSlotHelper {
 
         list.add(tt);
       }
-      ;
     });
 
     return list;

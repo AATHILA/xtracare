@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pill_reminder/dashboard.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/medicine.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/my_drawer_header.dart';
+import 'package:pill_reminder/notification_details.dart';
+import 'package:pill_reminder/notification_helper.dart';
 import 'package:pill_reminder/prescription.dart';
 import 'package:pill_reminder/profiles.dart';
 import 'package:pill_reminder/timeslot.dart';
@@ -24,30 +27,42 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
+
+    listenToNotification();
+
     SharedPreferHelper.getData('login_session_username').then((username) => {
           UserHelper.getUser(username).then((value) => {
                 setState(() {
-                  value.forEach((element) {
+                  for (var element in value) {
                     usr = User.fromMap(element);
-                  });
+                  }
                 })
               })
         });
+  }
+
+  listenToNotification() async {
+    onClickNotification.stream.listen((event) async {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NotificationDetailsWidget(event)));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var container;
     if (currentPage == DrawerSections.dashboard) {
-      container = DashboardWidget();
+      container = const DashboardWidget();
     } else if (currentPage == DrawerSections.profiles) {
-      container = ProfilesWidget();
+      container = const ProfilesWidget();
     } else if (currentPage == DrawerSections.timeslot) {
-      container = TimeSlotWidget();
+      container = const TimeSlotWidget();
     } else if (currentPage == DrawerSections.medicine) {
-      container = MedicineWidget();
+      container = const MedicineWidget();
     } else if (currentPage == DrawerSections.prescription) {
-      container = PrescriptionWidget();
+      container = const PrescriptionWidget();
     } /* else if (currentPage == DrawerSections.notifications) {
       container = NotificationsPage();
     } else if (currentPage == DrawerSections.privacy_policy) {
@@ -58,9 +73,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 7, 53, 91),
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
         title: Center(
-          child: Text(titleApp, style: TextStyle(color: Colors.white)),
+          child: Text(titleApp, style: const TextStyle(color: Colors.black)),
         ),
       ),
       body: container,
@@ -76,7 +92,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Widget MyDrawerList() {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 15,
       ),
       child: Column(
@@ -92,7 +108,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               currentPage == DrawerSections.medicine ? true : false),
           menuItem(5, "Prescription", Icons.medication,
               currentPage == DrawerSections.prescription ? true : false),
-          Divider(),
+          const Divider(),
           menuItem(6, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
           menuItem(7, "Logout", Icons.logout,
@@ -138,7 +154,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           }
         },
         child: Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             children: [
               Expanded(
@@ -152,7 +168,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 flex: 3,
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 16,
                   ),

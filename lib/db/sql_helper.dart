@@ -12,6 +12,7 @@ class SQLHelper {
     batch.execute("DROP TABLE IF EXISTS prescription");
     batch.execute("DROP TABLE IF EXISTS schedules");
     batch.execute("DROP TABLE IF EXISTS schedules_items");
+    batch.execute("DROP TABLE IF EXISTS notification_settings");
 
     batch.execute('''CREATE TABLE user(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -101,6 +102,7 @@ class SQLHelper {
         time TEXT,
         snooze int,
         schedule_status TEXT,
+        profile_id integer,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         sync_status TEXT DEFAULT 'PI'
@@ -112,6 +114,17 @@ class SQLHelper {
         schedules_id int,
         medication_id int,
         status TEXT,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
+      )
+      ''');
+
+    batch.execute('''CREATE TABLE notification_settings(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        profile_id int,
+        snooze int,
+        alarm_sound TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         sync_status TEXT DEFAULT 'PI'

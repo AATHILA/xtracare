@@ -11,6 +11,7 @@ import 'package:pill_reminder/model/medicine.dart';
 import 'package:pill_reminder/model/prescription.dart';
 import 'package:pill_reminder/model/schedules.dart';
 import 'package:pill_reminder/model/timeslot.dart';
+import 'package:pill_reminder/notification_helper.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
 class AddPrescriptionStepOneWidget extends StatefulWidget {
@@ -136,8 +137,10 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                             newMed.timeslot_id ?? 0)
                         .then((timeslots) async {
                       for (var timestr in timeslots) {
-                        await SchedulesHelper.getSchedulr(format.format(dt),
-                                TimeslotTimes.fromMap(timestr).time ?? '')
+                        await SchedulesHelper.getSchedulr(
+                                format.format(dt),
+                                TimeslotTimes.fromMap(timestr).time ?? '',
+                                profile_id)
                             .then((schedule1) async {
                           if (schedule1.isNotEmpty) {
                             int sid = 0;
@@ -150,11 +153,13 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                                 medicationId: md,
                                 status: 'PENDING');
                             await SchedulesItemHelper.createScheduleItems(sti);
+                            await SchedulesHelper.updateSchedulePending(sid);
                           } else {
                             Schedules sttt = Schedules(
                                 time: TimeslotTimes.fromMap(timestr).time,
                                 scheduleDate: format.format(dt),
                                 snooze: 0,
+                                profileId: profile_id,
                                 scheduleStatus: 'PENDING');
                             await SchedulesHelper.createSchedule(sttt)
                                 .then((sss) async {
@@ -166,6 +171,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                                   sti);
                             });
                           }
+                          NotificationService().scheduleNotification();
                         });
                       }
                     });
@@ -193,7 +199,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   List<Step> getSteps() {
     return <Step>[
       Step(
-          title: Text('Prescription Details'),
+          title: const Text('Prescription Details'),
           content: Column(
             children: [
               Container(
@@ -201,7 +207,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                   child: TextFormField(
                       controller: _prescribedByController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: "Prescribed By",
                         errorText: !_validate && validField == "PRECRIBED"
                             ? errMsg
@@ -210,7 +216,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
             ],
           )),
       Step(
-          title: Text('Schedule'),
+          title: const Text('Schedule'),
           content: Column(
             children: [
               Container(
@@ -221,9 +227,9 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                       },
                       controller: _fromDateController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: "Start Date",
-                        suffixIcon: Icon(Icons.calendar_today),
+                        suffixIcon: const Icon(Icons.calendar_today),
                         errorText: !_validate && validField == "STARTDATE"
                             ? errMsg
                             : null,
@@ -235,7 +241,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                         _presentDatePicker(_toDateController);
                       },
                       controller: _toDateController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "End Date",
                         suffixIcon: Icon(Icons.calendar_today),
@@ -243,7 +249,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
             ],
           )),
       Step(
-          title: Text('Next Consultation(Optional)'),
+          title: const Text('Next Consultation(Optional)'),
           content: Column(
             children: [
               Container(
@@ -261,7 +267,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
             ],
           )),
       Step(
-          title: Text('Medication'),
+          title: const Text('Medication'),
           content: Column(
             children: [
               Container(
@@ -272,7 +278,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                     },
                     dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: "Medicine",
                         hintText: "Select Medicine",
                         errorText: !_validate && validField == "SELECTMEDICINE"
@@ -297,7 +303,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                 child: DropdownSearch<String>(
                   dropdownDecoratorProps: DropDownDecoratorProps(
                     dropdownSearchDecoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       labelText: "Dose",
                       hintText: "Select Dose",
                       errorText: !_validate && validField == "SELECTDOSE"
@@ -335,7 +341,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                     },
                     dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: "Frequency",
                         hintText: "Select Frequency",
                         errorText: !_validate && validField == "SELECTTIMESLOT"
@@ -383,13 +389,13 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   Widget _customPopupItemBuilderMedcine(
       BuildContext context, Medicine item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(
               border: Border.all(color: Theme.of(context).primaryColor),
               borderRadius: BorderRadius.circular(5),
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: const Color.fromARGB(255, 255, 255, 255),
             ),
       child: ListTile(
         onTap: () {
@@ -406,27 +412,28 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   Widget _customPopupItemBuilderTimeslot(
       BuildContext context, Timeslot item, bool isSelected) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: !isSelected
           ? null
           : BoxDecoration(
               border: Border.all(color: Theme.of(context).primaryColor),
               borderRadius: BorderRadius.circular(5),
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: const Color.fromARGB(255, 255, 255, 255),
             ),
       child: makeListTile(item),
     );
   }
 
   ListTile makeListTile(Timeslot timeslot) => ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         leading: Container(
-          padding: EdgeInsets.only(right: 12.0),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.only(right: 12.0),
+          decoration: const BoxDecoration(
               border:
                   Border(right: BorderSide(width: 1.0, color: Colors.black))),
           child: Container(
-              child: Column(
+              child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                 Icon(Icons.timer, color: Colors.black),
@@ -434,14 +441,15 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
         ),
         title: Text(
           timeslot.name ?? "",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         subtitle:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           Expanded(
             flex: 4,
             child: Padding(
-                padding: EdgeInsets.only(left: 10.0),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Wrap(
                   alignment: WrapAlignment.start,
                   direction: Axis.horizontal,
@@ -454,12 +462,12 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                               decoration: BoxDecoration(
                                 border: Border.all(
                                     width: 2,
-                                    color: Color.fromARGB(255, 0, 0, 0)),
+                                    color: const Color.fromARGB(255, 0, 0, 0)),
                               ),
                               child: Text(ele.time ?? "",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: const Color.fromARGB(255, 0, 0, 0),
+                                      color: Color.fromARGB(255, 0, 0, 0),
                                       fontSize: 10))))
                   ],
                 )),

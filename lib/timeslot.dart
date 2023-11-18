@@ -47,17 +47,17 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           bool refresh = await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TimeSlotAddWidget()));
+              MaterialPageRoute(builder: (context) => const TimeSlotAddWidget()));
 
           if (refresh) refreshData();
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: Container(
           color: Colors.grey[200],
           child: ListView.builder(
               shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemCount: list.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
@@ -69,23 +69,23 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
 
   Card makeCard(Timeslot timeslot) => Card(
         elevation: 8.0,
-        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Container(
-          decoration: BoxDecoration(color: Color.fromRGBO(34, 78, 154, 0.886)),
+          decoration: const BoxDecoration(color: Color.fromRGBO(34, 78, 154, 0.886)),
           child: makeListTile(timeslot),
         ),
       );
 
   ListTile makeListTile(Timeslot timeslot) => ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         leading: Container(
-          padding: EdgeInsets.only(right: 12.0),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.only(right: 12.0),
+          decoration: const BoxDecoration(
               border: Border(
                   right: BorderSide(
                       width: 1.0, color: Color.fromARGB(59, 246, 238, 238)))),
           child: Container(
-              child: Column(
+              child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                 Icon(Icons.timer, color: Colors.white),
@@ -93,14 +93,14 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
         ),
         title: Text(
           timeslot.name ?? "",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         subtitle:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           Expanded(
             flex: 4,
             child: Padding(
-                padding: EdgeInsets.only(left: 10.0),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Wrap(
                   alignment: WrapAlignment.start,
                   direction: Axis.horizontal,
@@ -116,14 +116,14 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
                                         255, 253, 254, 255)),
                               ),
                               child: Text(ele.time ?? "",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.white, fontSize: 9))))
                   ],
                 )),
           ),
         ]),
         trailing:
-            Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+            const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
         onTap: () {},
       );
 }

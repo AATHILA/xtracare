@@ -8,7 +8,7 @@ import 'package:pill_reminder/validate_helper.dart';
 class EditProfileWidget extends StatefulWidget {
   final int id;
 
-  EditProfileWidget({super.key, required this.id});
+  const EditProfileWidget({super.key, required this.id});
   @override
   State<EditProfileWidget> createState() => _EditProfileWidgetState();
 }
@@ -16,7 +16,7 @@ class EditProfileWidget extends StatefulWidget {
 class _EditProfileWidgetState extends State<EditProfileWidget> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController ageController = TextEditingController();
-  String? selectedValue = null;
+  String? selectedValue;
   bool _validate = true;
   String validField = '', errMsg = '';
   Profile newpf = Profile();
@@ -62,7 +62,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Container(child: CircularProgressIndicator())
+        ? Container(child: const CircularProgressIndicator())
         : Scaffold(
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.miniEndFloat,
@@ -73,7 +73,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                 await _updateProfile()
                     .then((value) => {if (value) Navigator.pop(context, true)});
               },
-              child: Icon(Icons.save),
+              child: const Icon(Icons.save),
             ),
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 7, 53, 91),
@@ -90,7 +90,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                     child: TextField(
                       controller: fullNameController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: 'Full Name',
                         errorText:
                             !_validate && validField == "FULL" ? errMsg : null,
@@ -102,7 +102,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                     child: TextField(
                       controller: ageController,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         labelText: 'Age',
                         errorText:
                             !_validate && validField == "AGE" ? errMsg : null,
@@ -111,13 +111,13 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                     ),
                   ),
                   Container(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: 10, top: 10, bottom: 10, right: 10),
                       child: FormField<String>(
                         builder: (FormFieldState<String> state) {
                           return InputDecorator(
                             decoration: InputDecoration(
-                                errorStyle: TextStyle(
+                                errorStyle: const TextStyle(
                                     color: Colors.redAccent, fontSize: 16.0),
                                 hintText: 'Select Relation',
                                 errorText:

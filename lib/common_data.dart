@@ -3,29 +3,29 @@ import 'package:flutter/material.dart';
 class CommonData {
   static List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("Me"), value: "Me"),
-      DropdownMenuItem(child: Text("Father"), value: "Father"),
-      DropdownMenuItem(child: Text("Mother"), value: "Mother"),
-      DropdownMenuItem(child: Text("Brother"), value: "Brother"),
-      DropdownMenuItem(child: Text("Sister"), value: "Sister"),
-      DropdownMenuItem(child: Text("Siblings"), value: "Siblings"),
-      DropdownMenuItem(child: Text("Child"), value: "Child"),
+      const DropdownMenuItem(value: "Me", child: Text("Me")),
+      const DropdownMenuItem(value: "Father", child: Text("Father")),
+      const DropdownMenuItem(value: "Mother", child: Text("Mother")),
+      const DropdownMenuItem(value: "Brother", child: Text("Brother")),
+      const DropdownMenuItem(value: "Sister", child: Text("Sister")),
+      const DropdownMenuItem(value: "Siblings", child: Text("Siblings")),
+      const DropdownMenuItem(value: "Child", child: Text("Child")),
     ];
     return menuItems;
   }
 
   static List<DropdownMenuItem<String>> get dropdownTimeStotItems {
     List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("DAILY"), value: "DAILY"),
-      DropdownMenuItem(child: Text("EVERY"), value: "EVERY"),
+      const DropdownMenuItem(value: "DAILY", child: Text("DAILY")),
+      const DropdownMenuItem(value: "EVERY", child: Text("EVERY")),
     ];
     return menuItems;
   }
 
   static List<DropdownMenuItem<String>> get dropdownMedicineCategoryItems {
     List<DropdownMenuItem<String>> menuItems = [
-      const DropdownMenuItem(child: Text("PILL"), value: "PILL"),
-      const DropdownMenuItem(child: Text("SOLUTION"), value: "SOLUTION"),
+      const DropdownMenuItem(value: "PILL", child: Text("PILL")),
+      const DropdownMenuItem(value: "SOLUTION", child: Text("SOLUTION")),
     ];
     return menuItems;
   }
