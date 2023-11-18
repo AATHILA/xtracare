@@ -1,5 +1,6 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:icons_flutter/icons_flutter.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,10 @@ import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/dashboard.dart';
 import 'package:pill_reminder/notification_details.dart';
 import 'package:pill_reminder/notification_helper.dart';
+import 'package:pill_reminder/prescriptionaddstep1.dart';
+import 'package:pill_reminder/profile_add.dart';
+import 'package:pill_reminder/timeslot.dart';
+import 'package:pill_reminder/timeslotadd.dart';
 
 class DashboardWidget extends StatefulWidget {
   const DashboardWidget({super.key});
@@ -43,6 +48,44 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: SpeedDial(
+        icon:Icons.add,
+        backgroundColor: Colors.black,
+        
+
+//provide here features of your parent FAB
+
+children: [
+        SpeedDialChild(
+          child: Icon(Icons.medication),
+          label: 'Add Prescription',
+          onTap:  () async {
+          bool refresh = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddPrescriptionStepOneWidget()));
+                  }),
+        SpeedDialChild(
+          child: Icon(Icons.person),
+          label: 'Add Profile',
+          onTap:  () async {
+          bool refresh = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ProfileAddWidget()));
+                  }),
+        SpeedDialChild(
+          child: Icon(Icons.timelapse_rounded),
+          label: 'Add Timeslot',
+          onTap:  () async {
+          bool refresh = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TimeSlotAddWidget()));
+                  }),
+       
+ ] 
+),
         body: SingleChildScrollView(
       child: Column(children: [
         EasyDateTimeLine(
@@ -92,7 +135,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: const Text(
                   'No Medication Today',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                )))
+                ))),
+              
       ]),
     ));
   }

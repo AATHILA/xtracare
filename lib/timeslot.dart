@@ -53,7 +53,9 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
         },
         child: const Icon(Icons.add),
       ),
-      body: Container(
+      body: 
+      list.isNotEmpty?
+      Container(
           color: Colors.grey[200],
           child: ListView.builder(
               shrinkWrap: true,
@@ -63,7 +65,15 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
                 return Container(
                   child: makeCard(list[index]),
                 );
-              })),
+              }))
+              :Container(
+                height: 300,
+                child: Center(
+                    child: const Text(
+                  'No Timeslot',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ))),
+              
     );
   }
 
