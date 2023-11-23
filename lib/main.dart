@@ -31,7 +31,7 @@ void main() {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
-    NotificationService().scheduleNotification();
+    // NotificationService().scheduleNotification();
     return Future.value(true);
   });
 }
@@ -80,12 +80,12 @@ class _myAppState extends State<MyApp> {
     );
 
     return MaterialApp(
-      title: "Super Screen",
+      title: "Xtracare",
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           body: Container(
-        margin: EdgeInsets.only(bottom: 10),
-        height: 70,
+        margin: EdgeInsets.all(10),
+        height: 30,
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
           image: DecorationImage(

@@ -54,9 +54,9 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
           child: const Icon(Icons.save),
         ),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 7, 53, 91),
+          backgroundColor: Colors.white,
           title: const Center(
-            child: Text("Add Medicine", style: TextStyle(color: Colors.white)),
+            child: Text("Add Medicine", style: TextStyle(color: Colors.black)),
           ),
         ),
         body: ListView(
@@ -97,8 +97,8 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
               ),
             ),
             Container(
-                padding:
-                    const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+                padding: const EdgeInsets.only(
+                    left: 10, top: 10, bottom: 10, right: 10),
                 child: FormField<String>(
                   builder: (FormFieldState<String> state) {
                     return InputDecorator(

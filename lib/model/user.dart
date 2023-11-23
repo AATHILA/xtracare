@@ -38,4 +38,14 @@ class User {
         username: map['username'],
         password: map['password']);
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'dob': dob,
+      'phonenumber': phonenumber,
+      'username': username,
+      'password': password,
+    };
+  }
 }

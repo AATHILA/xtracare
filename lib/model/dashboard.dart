@@ -3,13 +3,30 @@ class Dashboard {
   String? date;
 
   String? time;
-
+  int? profileId;
+  String? profileName;
+  String? audioName;
   List<DashboardItem>? items;
 
-  Dashboard({this.id, this.date, this.time, this.items});
+  Dashboard(
+      {this.id,
+      this.date,
+      this.time,
+      this.items,
+      this.profileId,
+      this.profileName,
+      this.audioName});
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'date': date, 'time': time, 'items': items};
+    return {
+      'id': id,
+      'date': date,
+      'time': time,
+      'items': items,
+      'profile_id': profileId,
+      'profile_name': profileName,
+      'audio_name': audioName
+    };
   }
 
   factory Dashboard.fromMap(Map<String, dynamic> map) {
@@ -18,6 +35,9 @@ class Dashboard {
       date: map['date'],
       time: map['time'],
       items: map['items'],
+      profileId: map['profile_id'],
+      profileName: map['profile_name'],
+      audioName: map['audio_name'],
     );
   }
 }

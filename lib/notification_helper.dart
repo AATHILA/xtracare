@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/db/notification_settings_helper.dart';
 import 'package:pill_reminder/db/schedules_helper.dart';
+import 'package:pill_reminder/db/sharedpref_helper.dart';
+import 'package:pill_reminder/model/dashboard.dart';
+import 'package:pill_reminder/model/notification_settings.dart';
 
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -40,7 +44,7 @@ class NotificationService {
   }
 
   Future<void> scheduleNotification() async {
-    SchedulesHelper.getSchedulesTodayPending(
+    await SchedulesHelper.getSchedulesTodayPending(
             DateFormat('dd/MM/yyyy').format(DateTime.now()), 0)
         .then((value) async {
       for (var dashboard in value) {
@@ -51,17 +55,47 @@ class NotificationService {
         if (dtt.compareTo(currentDate) > 0) {
           showNotification(
               dashboard.id ?? 0,
-              'Dont Forget to take your medicine',
+              'Hi ${dashboard.profileName}. Dont Forget to take your medicine',
               'Please take medicine at ${dashboard.time}',
-              dtt.toUtc());
-          SchedulesHelper.updateScheduleScheduled(dashboard.id ?? 0);
+              dtt.toUtc(),
+              dashboard.audioName ?? '');
+          await SchedulesHelper.updateScheduleScheduled(dashboard.id ?? 0);
         }
       }
     });
   }
 
+  Future<void> snoozeSchedule(int id) async {
+    int snooze = 0;
+    Dashboard dashboard = Dashboard();
+    await SharedPreferHelper.getData('active_profile').then((profileId) async {
+      await NotificationSettingsHelper.getNotificationByprofileid(
+              int.parse(profileId))
+          .then((map) {
+        NotificationSettings nt = NotificationSettings.fromMap(map.first);
+
+        snooze = nt.snooze!;
+      });
+    });
+    await SchedulesHelper.updateSnooze(id, snooze);
+    await SchedulesHelper.getSchedulesById(id).then((dash) {
+      dashboard = dash.first;
+    });
+    DateTime dtt = DateFormat('dd/MM/yyyy HH:mm aa')
+        .parse('${dashboard.date} ${dashboard.time}')
+        .add(Duration(minutes: snooze));
+
+    showNotification(
+        dashboard.id ?? 0,
+        'Hi ${dashboard.profileName}. Dont Forget to take your medicine',
+        'Please take medicine at ${dashboard.time}',
+        dtt.toUtc(),
+        dashboard.audioName ?? '');
+    await SchedulesHelper.updateScheduleScheduled(dashboard.id ?? 0);
+  }
+
   Future<void> showNotification(
-      int id, String title, String body, DateTime dtt) async {
+      int id, String title, String body, DateTime dtt, String audioStr) async {
     tz.initializeTimeZones();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
@@ -70,8 +104,7 @@ class NotificationService {
         body,
         tz.TZDateTime(tz.local, dtt.year, dtt.month, dtt.day, dtt.hour,
             dtt.minute, 0, 0, 0),
-        //schedule the notification to show after 2 seconds.
-        const NotificationDetails(
+        NotificationDetails(
           android: AndroidNotificationDetails('main_channel', 'Main Channel',
               channelDescription: "Reminder",
               importance: Importance.max,
@@ -81,11 +114,12 @@ class NotificationService {
               enableLights: true,
               fullScreenIntent: true,
               ticker: 'ticker',
-              sound: RawResourceAndroidNotificationSound('alarm1'),
+              sound: RawResourceAndroidNotificationSound(audioStr),
               actions: <AndroidNotificationAction>[
                 AndroidNotificationAction('taken', 'Taken'),
                 AndroidNotificationAction('snooze', 'Snooze'),
-                AndroidNotificationAction('skip', 'Skip'),
+                AndroidNotificationAction('skip', 'Skip',
+                    cancelNotification: true),
               ]),
         ),
         payload: id.toString(),

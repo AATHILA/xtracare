@@ -86,10 +86,10 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 7, 53, 91),
+          backgroundColor: Colors.white,
           title: const Center(
             child:
-                Text("Add Prescription", style: TextStyle(color: Colors.white)),
+                Text("Add Prescription", style: TextStyle(color: Colors.black)),
           ),
         ),
         body: Stepper(

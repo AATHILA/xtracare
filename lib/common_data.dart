@@ -30,6 +30,15 @@ class CommonData {
     return menuItems;
   }
 
+  static List<DropdownMenuItem<String>> get dropdownAlarmTune {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(value: "alarm1", child: Text("alarm1")),
+      const DropdownMenuItem(value: "alarm2", child: Text("alarm2")),
+      const DropdownMenuItem(value: "alarm3", child: Text("alarm3")),
+    ];
+    return menuItems;
+  }
+
   static List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
     List<DateTime> days = [];
     for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
