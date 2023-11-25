@@ -13,10 +13,16 @@ class MedicineHelper {
         where: "id = ?", whereArgs: [medicine.id]);
   }
 
+
   static Future<List<Map<String, dynamic>>> getMedicineById(int id) async {
     final db = await SQLHelper.db();
     return db.query('medicine',
         where: "id = ? ", whereArgs: [id], orderBy: "id", limit: 1);
+  }
+
+  static Future<int> deleteMedicine(int id) async {
+    final db = await SQLHelper.db();
+    return await db.delete('deleteMedicine',where: "medicineid = ? ", whereArgs: [id]);
   }
 
   static Future<List<Map<String, dynamic>>> getMedicineByName(

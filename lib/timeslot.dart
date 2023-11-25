@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/db/timeslot_helper.dart';
 import 'package:pill_reminder/model/timeslot.dart';
+import 'package:pill_reminder/timeslot_edit.dart';
 import 'package:pill_reminder/timeslotadd.dart';
 
 class TimeSlotWidget extends StatefulWidget {
@@ -19,6 +20,7 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
   void initState() {
     super.initState();
     refreshData();
+
   }
 
   void refreshData() {
@@ -27,13 +29,10 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
         userID = int.parse(value);
       });
       TimeSlotHelper.queryAll(userID).then((value) {
-        List<Timeslot> templist = [];
-        for (var element in value) {
-          templist.add(element);
-        }
+     
 
         setState(() {
-          list = templist;
+          list = value;
         });
         print('Fetched ${list.length}');
       });
@@ -76,12 +75,12 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
               
     );
   }
-
+  
   Card makeCard(Timeslot timeslot) => Card(
         elevation: 8.0,
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Container(
-          decoration: const BoxDecoration(color: Color.fromRGBO(34, 78, 154, 0.886)),
+          decoration: const BoxDecoration(color: Colors.black),
           child: makeListTile(timeslot),
         ),
       );
@@ -133,7 +132,12 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
           ),
         ]),
         trailing:
-            const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-        onTap: () {},
+            const Icon(Icons.edit, color: Colors.white, size: 30.0),
+        onTap: () async {
+           bool refresh = await Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TimeslotEditWidget(id:timeslot.id ?? 0)));
+
+          if (refresh) refreshData();
+        },
       );
 }

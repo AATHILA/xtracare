@@ -34,7 +34,6 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   int selectedTimeslot = 0;
   int userID = 0;
   int profile_id = 0;
-
   bool _validate = true;
   String validField = '', errMsg = '';
   validateFields() {
@@ -86,10 +85,10 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 7, 53, 91),
+          backgroundColor:Colors.white,
           title: const Center(
             child:
-                Text("Add Prescription", style: TextStyle(color: Colors.white)),
+                Text("Add Prescription", style: TextStyle(color: Colors.black)),
           ),
         ),
         body: Stepper(

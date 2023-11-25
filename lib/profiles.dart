@@ -129,12 +129,14 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
         ]),
         trailing: const Icon(Icons.keyboard_arrow_right,
             color: Colors.white, size: 30.0),
-        onTap: () {
-          Navigator.push(
+        onTap: () async { 
+          bool refresh= await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
                       EditProfileWidget(id: profile.id ?? 0)));
+         if (refresh) dataRefresh();
         },
+       
       );
 }

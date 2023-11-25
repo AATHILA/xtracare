@@ -4,6 +4,7 @@ class Medicine {
   String? description;
   String? side_effects;
   String? category;
+  
 
   Medicine(
       {this.id, this.name, this.category, this.description, this.side_effects});
@@ -13,7 +14,8 @@ class Medicine {
       'name': name,
       'description': description,
       'side_effects': side_effects,
-      'category': category
+      'category': category,
+      
     };
   }
 

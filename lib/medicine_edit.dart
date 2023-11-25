@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/common_data.dart';
 import 'package:pill_reminder/db/medicine_helper.dart';
+import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
-class MedicineAddWidget extends StatefulWidget {
-  const MedicineAddWidget({super.key});
+class MedicineEditWidget extends StatefulWidget {
+  final int id;
+  const MedicineEditWidget({super.key,required this.id});
 
   @override
-  State<StatefulWidget> createState() => _MedicineAddWidgetState();
+  State<StatefulWidget> createState() => _MedicineEditWidgetState();
 }
 
-class _MedicineAddWidgetState extends State<MedicineAddWidget> {
+class _MedicineEditWidgetState extends State<MedicineEditWidget> {
   String? selectedValue = "PILL";
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -29,17 +31,40 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
         errMsg = "Name is required";
       }
     });
+    
   }
 
-  Future<void> _addMedicine() async {
+
+  void initState() {
+    super.initState();
+    setState(() {
+      SharedPreferHelper.getData("login_session_userid").then((value) {
+        var userID = int.parse(value);
+      });
+       MedicineHelper.getMedicineById(widget.id).then((value) {
+        
+        Medicine mm = Medicine.fromMap(value.first);
+        setState(() {
+          nameController.text=mm.name!;
+          descriptionController.text=mm.description!;
+          sideeffectController.text=mm.side_effects!;
+          selectedValue=mm.category;
+        });
+
+      });
+});
+  }
+  Future<void> _editMedicine(BuildContext context) async {
     Medicine med = Medicine(
+        id: widget.id,
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
         side_effects: sideeffectController.text.trim(),
         category: selectedValue);
-    await MedicineHelper.createMedicine(med);
-    Navigator.pop(context, true);
+    await MedicineHelper.updateMedicine(med).then((value) {Navigator.pop(context, true);});
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +75,14 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
             
             validateFields();
             if (_validate == false) return;
-            await _addMedicine();
+            await _editMedicine(context);
           },
           child: const Icon(Icons.save),
         ),
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color.fromARGB(255, 7, 53, 91),
           title: const Center(
-            child: Text("Add Medicine", style: TextStyle(color: Colors.black)),
+            child: Text("Edit Medicine", style: TextStyle(color: Colors.white)),
           ),
         ),
         body: ListView(
