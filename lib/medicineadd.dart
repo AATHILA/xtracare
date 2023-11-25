@@ -65,6 +65,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
+            
             validateFields();
             if (_validate == false) return;
             await _addMedicine();

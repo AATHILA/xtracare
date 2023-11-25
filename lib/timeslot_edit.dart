@@ -6,13 +6,14 @@ import 'package:pill_reminder/db/timeslot_helper.dart';
 import 'package:pill_reminder/model/timeslot.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
-class TimeslotEdit extends StatefulWidget {
-  const TimeslotEdit({super.key});
+class TimeslotEditWidget extends StatefulWidget {
+  final int id;
+  const TimeslotEditWidget({super.key,required this.id});
   @override
-  State<StatefulWidget> createState() => _TimeSlotAddWidgetState();
+  State<StatefulWidget> createState() => _TimeSlotEditWidgetState();
 }
 
-class _TimeSlotAddWidgetState extends State<TimeslotEdit> {
+class _TimeSlotEditWidgetState extends State<TimeslotEditWidget> {
   String? selectedValue;
   bool _validate = true;
   bool _enabled = false;
@@ -48,13 +49,30 @@ class _TimeSlotAddWidgetState extends State<TimeslotEdit> {
       SharedPreferHelper.getData("login_session_userid").then((value) {
         userID = int.parse(value);
       });
+      TimeSlotHelper.getTimeSlotById(widget.id).then((value) {
+        
+        Timeslot tt = Timeslot.fromMap(value.first);
+        setState(() {
+          timeslotNameController.text=tt.name!;
+          timeslotNDayController.text=tt.nooftimes!;
+          selectedValue=tt.type!;
+        });
 
-      selectedValue = "DAILY";
-      timeslotNDayController.text = "1";
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _addTime();
+        TimeSlotTimesHelper.getTimeSlotById(widget.id).then((val){
+          for(int i=0;i<val.length;i++){
+            TimeslotTimes timeslotTimes = TimeslotTimes.fromMap(val[i]);
+            _addTime();
+            times[i].text=timeslotTimes.time!;
+
+          }
+
+        });
+
+
+
       });
-    });
+
+});
   }
 
   _addTime() {
@@ -105,21 +123,26 @@ class _TimeSlotAddWidgetState extends State<TimeslotEdit> {
     });
   }
 
-  Future<void> _addTiming() async {
+ _editTiming()   {
     Timeslot newtime = Timeslot(
+        id: widget.id,
         name: timeslotNameController.text.trim(),
         type: selectedValue,
         nooftimes: timeslotNDayController.text.trim(),
         userid: userID);
-    TimeSlotHelper.createTimeslot(newtime).then((value) {
+     TimeSlotHelper.updateTimeslot(newtime).then((value) async {
+      await TimeSlotTimesHelper.deleteTimeslot(widget.id);
+
+      
       for (int i = 0; i < times.length; i++) {
         TimeslotTimes timeslots =
-            TimeslotTimes(time: times[i].text, timeslotid: value);
-        TimeSlotTimesHelper.createTimeslot(timeslots);
+            TimeslotTimes(time: times[i].text, timeslotid: widget.id);
+       await TimeSlotTimesHelper.createTimeslot(timeslots);
       }
+ 
     });
-
-    Navigator.pop(context, true);
+       Navigator.pop(context, true);
+  
   }
 
   @override
@@ -130,14 +153,16 @@ class _TimeSlotAddWidgetState extends State<TimeslotEdit> {
           onPressed: () async {
             validateFields();
             if (_validate == false) return;
-            await _addTiming();
+            await _editTiming();
+            
+
           },
           child: const Icon(Icons.save),
         ),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 7, 53, 91),
           title: const Center(
-            child: Text("Add Timeslot", style: TextStyle(color: Colors.white)),
+            child: Text("Edit Timeslot", style: TextStyle(color: Colors.white)),
           ),
         ),
         body: SingleChildScrollView(

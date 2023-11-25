@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pill_reminder/db/prescription_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/prescription.dart';
+import 'package:pill_reminder/model/timeslot.dart';
+import 'package:pill_reminder/prescription_edit.dart';
 import 'package:pill_reminder/prescriptionaddstep1.dart';
 
 class PrescriptionWidget extends StatefulWidget {
@@ -80,7 +82,7 @@ class _PrescriptionWidgetState extends State<PrescriptionWidget> {
         elevation: 8.0,
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Container(
-          decoration: const BoxDecoration(color: Color.fromRGBO(34, 78, 154, 0.886)),
+          decoration: const BoxDecoration(color: Colors.black),
           child: makeListTile(pp),
         ),
       );
@@ -109,7 +111,11 @@ class _PrescriptionWidgetState extends State<PrescriptionWidget> {
           ),
         ]),
         trailing:
-            const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-        onTap: () {},
+            const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0 ),
+        onTap: () async {
+          bool refresh = await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PrescriptionEditWidget(id: pp.id??0)));
+
+            if (refresh) refreshData();},
       );
 }

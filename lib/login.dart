@@ -109,7 +109,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                               map['active_profile'] =
                                                   pf.id.toString();
                                             }),
-                                            SharedPreferHelper.saveData(map)
+                                            SharedPreferHelper.saveData(map)    
                                                 .then(
                                               (value) => Navigator.of(context)
                                                   .pushNamedAndRemoveUntil(

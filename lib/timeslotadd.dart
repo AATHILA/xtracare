@@ -118,7 +118,6 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
         TimeSlotTimesHelper.createTimeslot(timeslots);
       }
     });
-
     Navigator.pop(context, true);
   }
 

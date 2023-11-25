@@ -35,7 +35,6 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   int selectedTimeslot = 0;
   int userID = 0;
   int profile_id = 0;
-
   bool _validate = true;
   String validField = '', errMsg = '';
   validateFields() {

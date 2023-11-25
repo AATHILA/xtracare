@@ -6,7 +6,8 @@ import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
 class EditProfileWidget extends StatefulWidget {
-  final int id;
+
+ final int id;
 
   const EditProfileWidget({super.key, required this.id});
   @override

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:pill_reminder/db/medicine_helper.dart';
 import 'package:pill_reminder/medicineadd.dart';
 import 'package:pill_reminder/model/medicine.dart';
+import 'package:pill_reminder/medicine_edit.dart';
 
 class MedicineWidget extends StatefulWidget {
   const MedicineWidget({super.key});
@@ -130,6 +131,10 @@ class _MedicineWidgetState extends State<MedicineWidget> {
         ),
         trailing:
             const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-        onTap: () {},
+        onTap: () async {
+          bool refresh = await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MedicineEditWidget(id: medicine.id ?? 0)));
+
+            if (refresh) dataRefresh();},
       );
 }

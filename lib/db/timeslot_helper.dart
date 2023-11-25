@@ -25,6 +25,26 @@ class TimeSlotHelper {
     return db.query('timeslot',
         where: "id = ? ", whereArgs: [id], orderBy: "id", limit: 1);
   }
+   static Future<Timeslot> timeSlotById(int id) async {
+  List<Timeslot> list = [];
+    await getTimeSlotById(id).then((value) async {
+      for (int i = 0; i < value.length; i++) {
+        Timeslot tt = Timeslot.fromMap(value[i]);
+        List<TimeslotTimes> times = [];
+        int tempid = tt.id ?? 0;
+        await TimeSlotTimesHelper.getTimeSlotById(tempid).then((value1) {
+          for (var timeslotTime in value1) {
+            TimeslotTimes ttt = TimeslotTimes.fromMap(timeslotTime);
+            times.add(ttt);
+          }
+          tt.times = times;
+        });
+
+        list.add(tt);
+      }
+    });
+
+    return list.first;}
 
   static Future<List<Timeslot>> queryAll(int userid) async {
     List<Timeslot> list = [];
@@ -71,5 +91,10 @@ class TimeSlotTimesHelper {
     final db = await SQLHelper.db();
     return db.query('timeslot_times',
         where: "timeslotid = ? ", whereArgs: [id], orderBy: "id");
+  }
+
+  static Future<int> deleteTimeslot(int id) async {
+    final db = await SQLHelper.db();
+    return await db.delete('timeslot_times',where: "timeslotid = ? ", whereArgs: [id]);
   }
 }

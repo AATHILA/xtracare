@@ -28,7 +28,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-
     listenToNotification();
 
     SharedPreferHelper.getData('login_session_username').then((username) => {
@@ -41,6 +40,45 @@ class _HomeWidgetState extends State<HomeWidget> {
               })
         });
   }
+  showAlertDialog(BuildContext context) {
+
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: Text("No"),
+    onPressed:  () {
+      setState(() {
+        currentPage=DrawerSections.dashboard;
+      });
+      Navigator.pop(context);
+    },
+  );
+  Widget continueButton = TextButton(
+    child: Text("Yes"),
+    onPressed:  () { 
+      SharedPreferHelper.removeData("login_session_username");
+      SharedPreferHelper.removeData("login_session_userid");
+      Navigator.of(context).pushNamedAndRemoveUntil(
+                'login', (Route<dynamic> route) => false);},
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Confirmation"),
+    content: Text("Are you sure want to logout?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
   listenToNotification() async {
     onClickNotification.stream.listen((event) async {
@@ -69,9 +107,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     } /* else if (currentPage == DrawerSections.privacy_policy) {
       container = PrivacyPolicyPage();
     } */
-    else if (currentPage == DrawerSections.logout) {
-      SharedPreferHelper.removeData("login_session_username");
-    }
+    
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
@@ -113,7 +149,9 @@ class _HomeWidgetState extends State<HomeWidget> {
           menuItem(6, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
           menuItem(7, "Logout", Icons.logout,
-              currentPage == DrawerSections.logout ? true : false),
+              currentPage == DrawerSections.logout ? true : false)
+          
+
         ],
       ),
     );
@@ -148,10 +186,11 @@ class _HomeWidgetState extends State<HomeWidget> {
             } else if (id == 7) {
               currentPage = DrawerSections.logout;
             }
+            
           });
           if (currentPage == DrawerSections.logout) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                'login', (Route<dynamic> route) => false);
+             showAlertDialog(context);
+           
           }
         },
         child: Padding(
@@ -191,4 +230,5 @@ enum DrawerSections {
   prescription,
   notifications,
   logout
+  
 }
