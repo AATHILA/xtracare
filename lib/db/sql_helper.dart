@@ -4,6 +4,8 @@ import 'package:sqflite/sqlite_api.dart';
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     Batch batch = database.batch();
+    batch.execute("DROP TABLE IF EXISTS table_sequence");
+    batch.execute("DROP TABLE IF EXISTS sync_status_table");
     batch.execute("DROP TABLE IF EXISTS user");
     batch.execute("DROP TABLE IF EXISTS profile");
     batch.execute("DROP TABLE IF EXISTS timeslot");
@@ -13,6 +15,23 @@ class SQLHelper {
     batch.execute("DROP TABLE IF EXISTS schedules");
     batch.execute("DROP TABLE IF EXISTS schedules_items");
     batch.execute("DROP TABLE IF EXISTS notification_settings");
+
+    batch.execute('''CREATE TABLE table_sequence( 
+        id INTEGER,
+        tableName TEXT,
+        userId INTEGER,
+        currentValue INTEGER,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        sync_status TEXT DEFAULT 'PI'
+        )
+        ''');
+
+    batch.execute('''CREATE TABLE sync_status_table(    
+        tableName TEXT,
+        lastSynced TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+        ''');
 
     batch.execute('''CREATE TABLE user(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -61,10 +80,10 @@ class SQLHelper {
       ''');
 
     batch.execute('''CREATE TABLE medicine(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id TEXT PRIMARY KEY NOT NULL,
         name TEXT,
 		    description TEXT,
-        side_effects TEXT,
+        sideEffects TEXT,
 		    category TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -87,7 +106,7 @@ class SQLHelper {
     batch.execute('''CREATE TABLE medication(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         prescription_id INTEGER,
-        medicine_id INTEGER,
+        medicine_id TEXT,
         dose TEXT,
         timeslot_id INTEGER,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

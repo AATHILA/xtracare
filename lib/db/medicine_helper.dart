@@ -4,16 +4,25 @@ import 'package:pill_reminder/model/medicine.dart';
 class MedicineHelper {
   static Future<int> createMedicine(Medicine medicine) async {
     final db = await SQLHelper.db();
-    return await db.insert('medicine', medicine.toMap());
+    Map<String, dynamic> map = medicine.toMap();
+    return await db.insert('medicine', map);
+  }
+
+  static Future<int> deleteMedicine(String id) async {
+    final db = await SQLHelper.db();
+    return await db.delete('medicine', where: 'id=?', whereArgs: [id]);
   }
 
   static Future<int> updateMedicine(Medicine medicine) async {
     final db = await SQLHelper.db();
+    Map tt = medicine.toMap();
+    tt['updatedOn'] = 'current_timestamp';
+    tt['sync_status'] = 'PU';
     return await db.update('medicine', medicine.toMap(),
         where: "id = ?", whereArgs: [medicine.id]);
   }
 
-  static Future<List<Map<String, dynamic>>> getMedicineById(int id) async {
+  static Future<List<Map<String, dynamic>>> getMedicineById(String id) async {
     final db = await SQLHelper.db();
     return db.query('medicine',
         where: "id = ? ", whereArgs: [id], orderBy: "id", limit: 1);
@@ -30,6 +39,7 @@ class MedicineHelper {
     final db = await SQLHelper.db();
     return db.query('medicine', orderBy: 'updatedOn desc', limit: 10);
   }
+
   /*static Future<List> queryAll() async {
     final db = await SQLHelper.db();
     List<Map> timeslots = await db.rawQuery(

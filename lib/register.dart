@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pill_reminder/api/api_call.dart';
@@ -7,6 +9,7 @@ import 'package:pill_reminder/db/user_helper.dart';
 import 'package:pill_reminder/login.dart';
 import 'package:pill_reminder/model/notification_settings.dart';
 import 'package:pill_reminder/model/profile.dart';
+import 'package:pill_reminder/model/table_sequence.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
@@ -188,7 +191,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: 'Username/Email',
-              errorText: !_validate && validField == "USERNAME" ? errMsg : null,
+              errorText: !_validate &&
+                      (validField == "USERNAME" ||
+                          validField == "USERNAME_EXIST")
+                  ? errMsg
+                  : null,
             ),
           ),
         ),
@@ -247,11 +254,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               onPressed: () {
                 validateFields();
                 if (_validate == false) return;
-                _addUser();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginWidget()),
-                );
+                _addUser(context);
               },
             )),
         Row(
@@ -276,7 +279,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     ));
   }
 
-  Future<void> _addUser() async {
+  Future<void> _addUser(BuildContext context) async {
     User newUser = User(
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
@@ -286,28 +289,48 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       phonenumber: phoneNumberController.text.trim(),
     );
 
-    /*await ApiCall.signUp(newUser).then((value) {
-     
-    });*/
+    await ApiCall.signUp(newUser).then((userData) {
+      if (userData.statusCode == 201) {
+        Map<String, dynamic> userMap = jsonDecode(userData.body);
+        User user = User.fromJson(userMap);
 
-    DateTime currentDate = DateTime.now();
-    DateFormat format = DateFormat("dd/MM/yyyy");
-    DateTime dateOfBirth = format.parse(dobController.text.trim());
+        DateTime currentDate = DateTime.now();
+        DateFormat format = DateFormat("dd/MM/yyyy");
+        DateTime dateOfBirth = format.parse(dobController.text.trim());
 
-    int age = currentDate.year - dateOfBirth.year;
-    Profile newProf = Profile(
-        name: "${firstNameController.text} ${lastNameController.text}",
-        age: age.toString(),
-        relation: "Me");
+        int age = currentDate.year - dateOfBirth.year;
+        Profile newProf = Profile(
+            name: "${firstNameController.text} ${lastNameController.text}",
+            age: age.toString(),
+            relation: "Me");
 
-    Future<int> userId = UserHelper.createUser(newUser);
-    userId.then((value) async {
-      newProf.userid = value;
-      await ProfileHelper.createProfile(newProf).then((profileId) {
-        NotificationSettings newStt = NotificationSettings(
-            profileId: profileId, snooze: 10, alarmSound: 'alarm1');
-        NotificationSettingsHelper.createNotitificationSettings(newStt);
-      });
+        Future<int> userId = UserHelper.createUser(user);
+        userId.then((value) async {
+          newProf.userid = value;
+          await ProfileHelper.createProfile(newProf).then((profileId) async {
+            NotificationSettings newStt = NotificationSettings(
+                profileId: profileId, snooze: 10, alarmSound: 'alarm1');
+            NotificationSettingsHelper.createNotitificationSettings(newStt);
+
+            TableSequence tableSequence = TableSequence(
+                tableName: 'medicine', currentValue: 1, userId: value);
+            await ApiCall.createSequence(tableSequence);
+          });
+
+          if (context.mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginWidget()),
+            );
+          }
+        });
+      } else if (userData.statusCode == 302) {
+        setState(() {
+          _validate = false;
+          validField = 'USERNAME_EXIST';
+          errMsg = "Username already registered";
+        });
+      }
     });
   }
 }

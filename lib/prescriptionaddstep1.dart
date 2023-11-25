@@ -27,9 +27,10 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
   final _fromDateController = TextEditingController();
   final _toDateController = TextEditingController();
   final _consultationDateController = TextEditingController();
+  DateFormat format = DateFormat("dd/MM/yyyy");
 
   int _currentStep = 0;
-  int selectedMedicine = 0;
+  String selectedMedicine = '';
   String selectedDose = '';
   int selectedTimeslot = 0;
   int userID = 0;
@@ -79,6 +80,9 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
           .then((value) => {userID = int.parse(value)});
       SharedPreferHelper.getData('active_profile')
           .then((value) => {profile_id = int.parse(value)});
+      _fromDateController.text = format.format(DateTime.now());
+      _toDateController.text =
+          format.format(DateTime.now().add(const Duration(days: 7)));
     });
   }
 
@@ -123,7 +127,6 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                     medicine_id: selectedMedicine);
                 await MedicationHelper.createMedication(newMed)
                     .then((md) async {
-                  DateFormat format = DateFormat("dd/MM/yyyy");
                   DateTime startDate =
                       format.parse(_fromDateController.text.trim());
                   DateTime endDate =
@@ -287,7 +290,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                       ),
                     ),
                     onChanged: (value) {
-                      selectedMedicine = value!.id ?? 0;
+                      selectedMedicine = value!.id ?? '';
                     },
                     asyncItems: (filter) => getMedicine(filter),
                     compareFn: (i, s) => i.isEqual(s),
@@ -400,7 +403,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
       child: ListTile(
         onTap: () {
           setState(() {
-            selectedMedicine = item.id ?? 0;
+            selectedMedicine = item.id ?? '';
           });
         },
         selected: isSelected,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/api/sync_data_to_server.dart';
+import 'package:pill_reminder/common_data.dart';
+import 'package:pill_reminder/db/commmon_helper.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/schedules_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
@@ -30,8 +33,8 @@ void main() {
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    // NotificationService().scheduleNotification();
+  Workmanager().executeTask((task, inputData) async {
+    //await SyncDataToServer.syncDataToServer();
     return Future.value(true);
   });
 }
@@ -48,12 +51,13 @@ class _myAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
+/*
     Future<List<Map<String, dynamic>>> userlist = UserHelper.getUsers();
     userlist.then((value) => print(value));
     Future<List<Map<String, dynamic>>> profilelist =
         ProfileHelper.getProfiles();
     profilelist.then((value) => print(value));
-
+*/
     SharedPreferHelper.getData("login_session_username").then((value) => {
           if ((value != null))
             {
@@ -73,12 +77,23 @@ class _myAppState extends State<MyApp> {
     WidgetsFlutterBinding.ensureInitialized();
     NotificationService().initNotification();
     Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-    Workmanager().registerPeriodicTask(
-      "2",
-      "NotificationPeriodicTask",
+    /*  Workmanager().registerPeriodicTask(
+      "1",
+      "First 15",
       frequency: const Duration(minutes: 15),
     );
+    Workmanager().registerPeriodicTask(
+      "2",
+      "First 20",
+      frequency: const Duration(minutes: 20),
+    );
 
+    Workmanager().registerPeriodicTask(
+      "3",
+      "First 25",
+      frequency: const Duration(minutes: 25),
+    );
+*/
     return MaterialApp(
       title: "Xtracare",
       debugShowCheckedModeBanner: false,

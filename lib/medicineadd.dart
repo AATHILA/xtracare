@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/common_data.dart';
 import 'package:pill_reminder/db/medicine_helper.dart';
+import 'package:pill_reminder/db/sequence_helper.dart';
+import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
+import 'package:pill_reminder/model/table_sequence.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
 class MedicineAddWidget extends StatefulWidget {
@@ -19,6 +22,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
 
   bool _validate = true;
   String validField = '', errMsg = '';
+  int userID = 0;
   validateFields() {
     setState(() {
       _validate = true;
@@ -31,13 +35,27 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferHelper.getData("login_session_userid").then((value) {
+      setState(() {
+        userID = int.parse(value);
+      });
+    });
+  }
+
   Future<void> _addMedicine() async {
-    Medicine med = Medicine(
-        name: nameController.text.trim(),
-        description: descriptionController.text.trim(),
-        side_effects: sideeffectController.text.trim(),
-        category: selectedValue);
-    await MedicineHelper.createMedicine(med);
+    await SequenceHelper.getSequence('medicine', userID)
+        .then((medicineId) async {
+      Medicine med = Medicine(
+          id: medicineId,
+          name: nameController.text.trim(),
+          description: descriptionController.text.trim(),
+          sideEffects: sideeffectController.text.trim(),
+          category: selectedValue);
+      await MedicineHelper.createMedicine(med);
+    });
     Navigator.pop(context, true);
   }
 

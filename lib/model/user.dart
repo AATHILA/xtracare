@@ -38,6 +38,17 @@ class User {
         username: map['username'],
         password: map['password']);
   }
+  factory User.fromJson(Map<String, dynamic> map) {
+    return User(
+        id: map['id'],
+        firstName: map['firstName'],
+        lastName: map['lastName'],
+        dob: map['dob'],
+        phonenumber: map['phonenumber'],
+        username: map['username'],
+        password: map['password']);
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'firstName': firstName,

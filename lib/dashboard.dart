@@ -4,6 +4,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:icons_flutter/icons_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/api/sync_data_from_server.dart';
+import 'package:pill_reminder/api/sync_data_to_server.dart';
 import 'package:pill_reminder/db/schedules_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/dashboard.dart';
@@ -34,6 +36,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   }
 
   dataRefresh() async {
+    await SyncDataFromServer.syncDataFromServer();
+    await SyncDataToServer.syncDataToServer();
+
     await SharedPreferHelper.getData('active_profile').then((value) {
       profileID = int.parse(value);
     });

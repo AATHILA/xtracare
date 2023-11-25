@@ -1,3 +1,4 @@
+import 'package:pill_reminder/db/medicine_helper.dart';
 import 'package:pill_reminder/db/sql_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
 import 'package:pill_reminder/model/prescription.dart';
@@ -34,11 +35,12 @@ class PrescriptionHelper {
         Prescription tt = Prescription.fromMap(value[i]);
         List<Medication> medications = [];
         int tempid = tt.id ?? 0;
-        await MedicationHelper.getMedicationById(tempid).then((value1) async {
+        await MedicationHelper.getMedicationByPrescritionId(tempid)
+            .then((value1) async {
           for (var med in value1) {
             Medication ttt = Medication.fromMap(med);
 
-            await MedicationHelper.getMedicationById(ttt.medicine_id ?? 0)
+            await MedicineHelper.getMedicineById(ttt.medicine_id!)
                 .then((medic) {
               for (var it in medic) {
                 ttt.medicine = Medicine.fromMap(it);
@@ -70,7 +72,7 @@ class MedicationHelper {
         where: "id = ?", whereArgs: [medication.id]);
   }
 
-  static Future<List<Map<String, dynamic>>> getMedicationById(
+  static Future<List<Map<String, dynamic>>> getMedicationByPrescritionId(
       int prescriptionId) async {
     final db = await SQLHelper.db();
     return db.query('medication',

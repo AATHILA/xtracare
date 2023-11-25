@@ -43,7 +43,7 @@ class Prescription {
 class Medication {
   int? id;
   int? prescription_id;
-  int? medicine_id;
+  String? medicine_id;
   String? dose;
   int? timeslot_id;
   Timeslot? timeslot;

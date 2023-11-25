@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:pill_reminder/api/api_call.dart';
 import 'package:pill_reminder/constant.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
+import 'package:pill_reminder/db/sequence_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/profile.dart';
+import 'package:pill_reminder/model/table_sequence.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/register.dart';
 import 'package:pill_reminder/db/user_helper.dart';
@@ -141,10 +146,30 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   Future<List<Map<String, dynamic>>> validateUser(
-      String username, String password) {
-    UserHelper.getUsers().then((value) => value.forEach((element) {
-          print(User.fromMap(element));
-        }));
+      String username, String password) async {
+    User user = User(username: username, password: password);
+    await ApiCall.login(user).then((value) async {
+      if (value.statusCode == 200) {
+        Map<String, dynamic> userMap = jsonDecode(value.body);
+        User tt = User.fromJson(userMap);
+        UserHelper.deleteItem(tt.id!);
+        UserHelper.createUser(tt);
+        TableSequence tableSequence =
+            TableSequence(tableName: 'medicine', userId: tt.id);
+        createSequence(tableSequence);
+      }
+    });
     return UserHelper.checkUser(username, password);
+  }
+
+  createSequence(TableSequence tableSequence) async {
+    await ApiCall.getSequence(tableSequence).then((tableValue) async {
+      if (tableValue.statusCode == 200) {
+        Map<String, dynamic> sequenceMap = jsonDecode(tableValue.body);
+        TableSequence ts = TableSequence.fromJson(sequenceMap);
+        await SequenceHelper.deleteTableSequence(ts.tableName!, ts.userId!);
+        await SequenceHelper.createTableSequence(ts);
+      }
+    });
   }
 }

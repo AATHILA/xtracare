@@ -1,30 +1,62 @@
 class Medicine {
-  int? id;
+  String? id;
   String? name;
   String? description;
-  String? side_effects;
+  String? sideEffects;
   String? category;
+  String? createdAt;
+  String? updatedOn;
 
   Medicine(
-      {this.id, this.name, this.category, this.description, this.side_effects});
+      {this.id,
+      this.name,
+      this.category,
+      this.description,
+      this.sideEffects,
+      this.createdAt,
+      this.updatedOn});
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'description': description,
-      'side_effects': side_effects,
+      'sideEffects': sideEffects,
       'category': category
     };
   }
 
   factory Medicine.fromMap(Map<String, dynamic> map) {
     return Medicine(
-      id: map['id'],
-      name: map['name'],
-      description: map['description'],
-      side_effects: map['side_effects'],
-      category: map['category'],
-    );
+        id: map['id'],
+        name: map['name'],
+        description: map['description'],
+        sideEffects: map['sideEffects'],
+        category: map['category'],
+        createdAt: DateTime.parse(map['createdAt']).toString(),
+        updatedOn: DateTime.parse(map['updatedOn']).toString());
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'sideEffects': sideEffects,
+      'category': category,
+      'createdAt': createdAt,
+      'updatedOn': updatedOn
+    };
+  }
+
+  factory Medicine.fromJson(Map<String, dynamic> map) {
+    return Medicine(
+        id: map['id'],
+        name: map['name'],
+        description: map['description'],
+        sideEffects: map['sideEffects'],
+        category: map['category'],
+        createdAt: DateTime.parse(map['createdAt']).toString(),
+        updatedOn: DateTime.parse(map['updatedOn']).toString());
   }
 
   bool isEqual(Medicine s) {
