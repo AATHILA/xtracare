@@ -22,7 +22,7 @@ class Medicine {
       'name': name,
       'description': description,
       'sideEffects': sideEffects,
-      'category': category
+      'category': category,
     };
   }
 
