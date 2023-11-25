@@ -98,8 +98,8 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
               ),
             ),
             Container(
-                padding:
-                    const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+                padding: const EdgeInsets.only(
+                    left: 10, top: 10, bottom: 10, right: 10),
                 child: FormField<String>(
                   builder: (FormFieldState<String> state) {
                     return InputDecorator(

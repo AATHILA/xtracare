@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/api/api_call.dart';
 import 'package:pill_reminder/db/notification_settings_helper.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/user_helper.dart';
@@ -284,6 +285,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       password: passwordController.text.trim(),
       phonenumber: phoneNumberController.text.trim(),
     );
+
+    /*await ApiCall.signUp(newUser).then((value) {
+     
+    });*/
 
     DateTime currentDate = DateTime.now();
     DateFormat format = DateFormat("dd/MM/yyyy");

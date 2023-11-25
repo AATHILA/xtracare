@@ -3,6 +3,7 @@ import 'package:icons_flutter/icons_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pill_reminder/db/schedules_helper.dart';
 import 'package:pill_reminder/model/dashboard.dart';
+import 'package:pill_reminder/notification_helper.dart';
 
 class NotificationDetailsWidget extends StatefulWidget {
   final String payload;
@@ -15,6 +16,7 @@ class NotificationDetailsWidget extends StatefulWidget {
 
 class NotificationDetailsWidgetState extends State<NotificationDetailsWidget> {
   List<Dashboard> listToShow = [];
+  bool _loading = true;
 
   @override
   void initState() {
@@ -29,109 +31,123 @@ class NotificationDetailsWidgetState extends State<NotificationDetailsWidget> {
         listToShow = value;
       });
     });
+    _loading = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(top: 18),
-        color: Colors.grey,
-        alignment: Alignment.center,
-        child: Material(
-            color: Colors.transparent,
-            child: ListView(shrinkWrap: true, children: [
-              Card(
-                color: Colors.white,
-                elevation: 8,
-                child: Container(
-                    decoration: const BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                                width: 5.0,
-                                color: Color.fromARGB(59, 246, 238, 238)))),
-                    child: Column(children: [
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+    return _loading
+        ? CircularProgressIndicator()
+        : Container(
+            margin: EdgeInsets.only(top: 18),
+            color: Colors.grey,
+            alignment: Alignment.center,
+            child: Material(
+                color: Colors.transparent,
+                child: ListView(shrinkWrap: true, children: [
+                  Card(
+                    color: Colors.white,
+                    elevation: 8,
+                    child: Container(
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                right: BorderSide(
+                                    width: 5.0,
+                                    color: Color.fromARGB(59, 246, 238, 238)))),
+                        child: Column(children: [
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
+                                Row(
+                                  children: [
+                                    Container(
+                                        padding: EdgeInsets.all(10),
+                                        child: InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Icon(
+                                              Icons.close,
+                                              color: Colors.black,
+                                            ))),
+                                  ],
+                                )
+                              ]),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const ClampingScrollPhysics(),
+                                    itemCount: listToShow.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Container(
+                                        child: makeListTile(listToShow[index]),
+                                      );
+                                    }),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          SchedulesHelper
+                                              .updateScheduleCompleted(
+                                                  int.parse(widget.payload));
+                                          SchedulesItemHelper
+                                              .updateScheduleItems(
+                                                  int.parse(widget.payload));
+
+                                          Navigator.pop(context, true);
                                         },
-                                        child: Icon(
-                                          Icons.close,
-                                          color: Colors.black,
-                                        ))),
-                              ],
-                            )
-                          ]),
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            ListView.builder(
-                                shrinkWrap: true,
-                                physics: const ClampingScrollPhysics(),
-                                itemCount: listToShow.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                    child: makeListTile(listToShow[index]),
-                                  );
-                                }),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert box
-                                    },
-                                    child: Column(children: [
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.black,
+                                        child: Column(children: [
+                                          Icon(
+                                            Icons.done,
+                                            color: Colors.black,
+                                          ),
+                                          Text('Taken',
+                                              style: TextStyle(
+                                                  color: Colors.black))
+                                        ]),
                                       ),
-                                      Text('Taken',
-                                          style: TextStyle(color: Colors.black))
-                                    ]),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert box
-                                    },
-                                    child: Column(children: [
-                                      Icon(
-                                        Icons.snooze,
-                                        color: Colors.black,
+                                      TextButton(
+                                        onPressed: () {
+                                          NotificationService().snoozeSchedule(
+                                              int.parse(widget.payload));
+                                          Navigator.pop(context,
+                                              true); // Close the alert box
+                                        },
+                                        child: Column(children: [
+                                          Icon(
+                                            Icons.snooze,
+                                            color: Colors.black,
+                                          ),
+                                          Text('Snooze',
+                                              style: TextStyle(
+                                                  color: Colors.black))
+                                        ]),
                                       ),
-                                      Text('Snooze',
-                                          style: TextStyle(color: Colors.black))
-                                    ]),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the alert box
-                                    },
-                                    child: Column(children: [
-                                      Icon(
-                                        Icons.skip_next,
-                                        color: Colors.black,
-                                      ),
-                                      Text('Skip',
-                                          style: TextStyle(color: Colors.black))
-                                    ]),
-                                  )
-                                ])
-                          ]),
-                    ])),
-              )
-            ])));
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, true);
+                                        },
+                                        child: Column(children: [
+                                          Icon(
+                                            Icons.skip_next,
+                                            color: Colors.black,
+                                          ),
+                                          Text('Skip',
+                                              style: TextStyle(
+                                                  color: Colors.black))
+                                        ]),
+                                      )
+                                    ])
+                              ]),
+                        ])),
+                  )
+                ])));
   }
 
   int indx = 0;
@@ -140,6 +156,14 @@ class NotificationDetailsWidgetState extends State<NotificationDetailsWidget> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         title: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(bottom: 10),
+            child: Text(
+              'Hi ${dashboard.profileName}. Please take your medications today',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           Row(
             children: [
               Container(
@@ -196,10 +220,13 @@ class NotificationDetailsWidgetState extends State<NotificationDetailsWidget> {
                                 const EdgeInsets.only(left: 35, bottom: 10),
                             child: Text(
                               toBeginningOfSentenceCase(
-                                      dashboard.items![i].dose) ??
+                                      '${dashboard.items![i].status == 'PENDING' ? 'Take' : 'Taken'} ${dashboard.items![i].dose!}') ??
                                   '',
-                              style: const TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
+                              style: TextStyle(
+                                  color:
+                                      (dashboard.items![i].status == 'PENDING'
+                                          ? Colors.white
+                                          : Colors.greenAccent),
                                   fontWeight: FontWeight.bold),
                             )),
                         const Spacer(),

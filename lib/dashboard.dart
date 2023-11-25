@@ -48,97 +48,95 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SpeedDial(
-        icon:Icons.add,
-        backgroundColor: Colors.black,
-        
+        floatingActionButton: SpeedDial(
+            icon: Icons.add,
+            backgroundColor: Colors.black,
 
 //provide here features of your parent FAB
 
-children: [
-        SpeedDialChild(
-          child: Icon(Icons.medication),
-          label: 'Add Prescription',
-          onTap:  () async {
-          bool refresh = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const AddPrescriptionStepOneWidget()));
+            children: [
+              SpeedDialChild(
+                  child: Icon(Icons.medication),
+                  label: 'Add Prescription',
+                  onTap: () async {
+                    bool refresh = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const AddPrescriptionStepOneWidget()));
                   }),
-        SpeedDialChild(
-          child: Icon(Icons.person),
-          label: 'Add Profile',
-          onTap:  () async {
-          bool refresh = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const ProfileAddWidget()));
+              SpeedDialChild(
+                  child: Icon(Icons.person),
+                  label: 'Add Profile',
+                  onTap: () async {
+                    bool refresh = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfileAddWidget()));
                   }),
-        SpeedDialChild(
-          child: Icon(Icons.timelapse_rounded),
-          label: 'Add Timeslot',
-          onTap:  () async {
-          bool refresh = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const TimeSlotAddWidget()));
+              SpeedDialChild(
+                  child: Icon(Icons.timelapse_rounded),
+                  label: 'Add Timeslot',
+                  onTap: () async {
+                    bool refresh = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TimeSlotAddWidget()));
                   }),
-       
- ] 
-),
+            ]),
         body: SingleChildScrollView(
-      child: Column(children: [
-        EasyDateTimeLine(
-          initialDate: DateTime.now(),
-          onDateChange: (selectedDate) {
-            setState(() {
-              date = DateFormat('dd/MM/yyyy').format(selectedDate);
+          child: Column(children: [
+            EasyDateTimeLine(
+              initialDate: DateTime.now(),
+              onDateChange: (selectedDate) {
+                setState(() {
+                  date = DateFormat('dd/MM/yyyy').format(selectedDate);
 
-              dataRefresh();
-            });
-          },
-          activeColor: Color.fromARGB(255, 177, 155, 255),
-          headerProps: const EasyHeaderProps(
-            selectedDateFormat: SelectedDateFormat.fullDateDMonthAsStrY,
-          ),
-          dayProps: const EasyDayProps(
-            height: 56.0,
-            width: 56.0,
-            dayStructure: DayStructure.dayNumDayStr,
-            inactiveDayStyle: DayStyle(
-              borderRadius: 48.0,
-              dayNumStyle: TextStyle(
-                fontSize: 18.0,
+                  dataRefresh();
+                });
+              },
+              activeColor: Color.fromARGB(255, 177, 155, 255),
+              headerProps: const EasyHeaderProps(
+                selectedDateFormat: SelectedDateFormat.fullDateDMonthAsStrY,
+              ),
+              dayProps: const EasyDayProps(
+                height: 56.0,
+                width: 56.0,
+                dayStructure: DayStructure.dayNumDayStr,
+                inactiveDayStyle: DayStyle(
+                  borderRadius: 48.0,
+                  dayNumStyle: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                ),
+                activeDayStyle: DayStyle(
+                  dayNumStyle: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-            activeDayStyle: DayStyle(
-              dayNumStyle: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        listToShow.isNotEmpty
-            ? ListView.builder(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                itemCount: listToShow.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    child: makeCard(listToShow[index]),
-                  );
-                })
-            : Container(
-                height: 300,
-                child: Center(
-                    child: const Text(
-                  'No Medication Today',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ))),
-              
-      ]),
-    ));
+            listToShow.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: listToShow.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        child: makeCard(listToShow[index]),
+                      );
+                    })
+                : Container(
+                    height: 300,
+                    child: Center(
+                        child: const Text(
+                      'No Medication Today',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ))),
+          ]),
+        ));
   }
 
   int indx = 0;
@@ -213,10 +211,13 @@ children: [
                                 const EdgeInsets.only(left: 35, bottom: 10),
                             child: Text(
                               toBeginningOfSentenceCase(
-                                      dashboard.items![i].dose) ??
+                                      '${dashboard.items![i].status == 'PENDING' ? 'Take' : 'Taken'} ${dashboard.items![i].dose!}') ??
                                   '',
-                              style: const TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
+                              style: TextStyle(
+                                  color:
+                                      (dashboard.items![i].status == 'PENDING'
+                                          ? Colors.white
+                                          : Colors.greenAccent),
                                   fontWeight: FontWeight.bold),
                             )),
                         const Spacer(),
@@ -245,12 +246,12 @@ children: [
                 ))
         ]),
         onTap: () async {
-          await Navigator.push(
+          bool refresh = await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
                       NotificationDetailsWidget(dashboard.id.toString())));
-
+          if (refresh) dataRefresh();
           //   _showAlertBox(context, dashboard.id ?? 0);
         },
       );

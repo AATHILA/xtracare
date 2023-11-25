@@ -10,4 +10,6 @@ class Constants {
   static const Color listBackgroundColor = Colors.black;
 
   static const Color textColor = Colors.white;
+
+  static const String urlStr = 'http://192.168.1.42:8080';
 }

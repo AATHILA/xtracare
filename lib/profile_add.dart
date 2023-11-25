@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/common_data.dart';
+import 'package:pill_reminder/db/notification_settings_helper.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
+import 'package:pill_reminder/model/notification_settings.dart';
 import 'package:pill_reminder/model/profile.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
@@ -55,9 +57,9 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
           child: const Icon(Icons.save),
         ),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 7, 53, 91), 
+          backgroundColor: Colors.white,
           title: const Center(
-            child: Text("Add Profile", style: TextStyle(color: Colors.white)),
+            child: Text("Add Profile", style: TextStyle(color: Colors.black)),
           ),
         ),
         body: Container(
@@ -89,8 +91,8 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
                 ),
               ),
               Container(
-                  padding:
-                      const EdgeInsets.only(left: 10, top: 10, bottom: 10, right: 10),
+                  padding: const EdgeInsets.only(
+                      left: 10, top: 10, bottom: 10, right: 10),
                   child: FormField<String>(
                     builder: (FormFieldState<String> state) {
                       return InputDecorator(
@@ -127,8 +129,15 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
         name: fullNameController.text.trim(),
         age: ageController.text.trim(),
         relation: selectedValue);
-    await SharedPreferHelper.getData("login_session_userid").then((value) =>
-        {pf.userid = int.parse(value), ProfileHelper.createProfile(pf)});
+    await SharedPreferHelper.getData("login_session_userid").then((value) => {
+          pf.userid = int.parse(value),
+          ProfileHelper.createProfile(pf).then((profid) {
+            NotificationSettings notification = NotificationSettings(
+                snooze: 10, alarmSound: 'alarm1', profileId: profid);
+            NotificationSettingsHelper.createNotitificationSettings(
+                notification);
+          })
+        });
 
     return Future(() => true);
   }
