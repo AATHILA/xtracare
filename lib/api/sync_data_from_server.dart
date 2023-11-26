@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:pill_reminder/api/api_call.dart';
+import 'package:pill_reminder/db/commmon_helper.dart';
 import 'package:pill_reminder/db/medicine_helper.dart';
 import 'package:pill_reminder/db/sync_status_table_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
@@ -26,6 +27,9 @@ class SyncDataFromServer {
         for (Medicine med in medicines) {
           await MedicineHelper.deleteMedicine(med.id!);
           await MedicineHelper.createMedicine(med).then((id) async {
+            await CommonHelper.updateSyncStatus(
+                'medicine', 'id=?', [id], 'DONE');
+
             SyncStatusTable syncStatusTable = SyncStatusTable(
                 tableName: 'medicine',
                 lastSynced: DateTime.parse(med.updatedOn!));

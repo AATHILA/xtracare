@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:pill_reminder/admin/admin_dashboard_widget.dart';
+import 'package:pill_reminder/admin/admin_home.dart';
+import 'package:pill_reminder/api/sync_data_from_server.dart';
 import 'package:pill_reminder/api/sync_data_to_server.dart';
 import 'package:pill_reminder/common_data.dart';
 import 'package:pill_reminder/db/commmon_helper.dart';
@@ -15,16 +18,32 @@ import 'package:pill_reminder/notification_helper.dart';
 import 'package:pill_reminder/register.dart';
 import 'package:workmanager/workmanager.dart';
 
+const MaterialColor primaryBlack = MaterialColor(
+  _blackPrimaryValue,
+  <int, Color>{
+    50: Color(0xFF000000),
+    100: Color(0xFF000000),
+    200: Color(0xFF000000),
+    300: Color(0xFF000000),
+    400: Color(0xFF000000),
+    500: Color(_blackPrimaryValue),
+    600: Color(0xFF000000),
+    700: Color(0xFF000000),
+    800: Color(0xFF000000),
+    900: Color(0xFF000000),
+  },
+);
+const int _blackPrimaryValue = 0xFF000000;
+
 void main() {
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const MyApp(),
-      /* theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.black,
-        brightness: Brightness.light,
-      )),*/
+      theme: new ThemeData(
+        primarySwatch: primaryBlack,
+      ),
       routes: {
+        'homeadmin': (context) => const AdminHomeWidget(),
         'login': (context) => const LoginWidget(),
         'home': (context) => const HomeWidget(),
         'register': (context) => const RegisterWidget(),
@@ -34,13 +53,14 @@ void main() {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    //await SyncDataToServer.syncDataToServer();
+    await SyncDataFromServer.syncDataFromServer();
+    await SyncDataToServer.syncDataToServer();
     return Future.value(true);
   });
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key}); 
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _myAppState();
@@ -59,18 +79,20 @@ class _myAppState extends State<MyApp> {
         ProfileHelper.getProfiles();
     profilelist.then((value) => print(value));
 */
-    SharedPreferHelper.getData("login_session_username").then((value) => {
-          if ((value != null))
-            {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  'home', (Route<dynamic> route) => false),
-            }
-          else
-            {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  'login', (Route<dynamic> route) => false),
-            }
-        });
+    SharedPreferHelper.getData("login_session_username").then((value) {
+      if ((value != null)) {
+        if (value == 'admin@admin.com') {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              'homeadmin', (Route<dynamic> route) => false);
+        } else {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('home', (Route<dynamic> route) => false);
+        }
+      } else {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('login', (Route<dynamic> route) => false);
+      }
+    });
   }
 
   @override
@@ -78,7 +100,7 @@ class _myAppState extends State<MyApp> {
     WidgetsFlutterBinding.ensureInitialized();
     NotificationService().initNotification();
     Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-    /*  Workmanager().registerPeriodicTask(
+    Workmanager().registerPeriodicTask(
       "1",
       "First 15",
       frequency: const Duration(minutes: 15),
@@ -94,7 +116,7 @@ class _myAppState extends State<MyApp> {
       "First 25",
       frequency: const Duration(minutes: 25),
     );
-*/
+
     return MaterialApp(
       title: "Xtracare",
       debugShowCheckedModeBanner: false,

@@ -6,6 +6,7 @@ class User {
   String? phonenumber;
   String? username;
   String? password;
+  String? role;
 
   User(
       {this.id,
@@ -14,7 +15,8 @@ class User {
       this.dob,
       this.phonenumber,
       this.username,
-      this.password});
+      this.password,
+      this.role});
 
   Map<String, dynamic> toMap() {
     return {
@@ -25,6 +27,7 @@ class User {
       'phonenumber': phonenumber,
       'username': username,
       'password': password,
+      'role': role
     };
   }
 
@@ -36,7 +39,8 @@ class User {
         dob: map['dob'],
         phonenumber: map['phonenumber'],
         username: map['username'],
-        password: map['password']);
+        password: map['password'],
+        role: map['role']);
   }
   factory User.fromJson(Map<String, dynamic> map) {
     return User(
@@ -46,7 +50,8 @@ class User {
         dob: map['dob'],
         phonenumber: map['phonenumber'],
         username: map['username'],
-        password: map['password']);
+        password: map['password'],
+        role: map['role']);
   }
 
   Map<String, dynamic> toJson() {
@@ -57,6 +62,7 @@ class User {
       'phonenumber': phonenumber,
       'username': username,
       'password': password,
+      'role': role
     };
   }
 }

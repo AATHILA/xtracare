@@ -90,6 +90,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
           title: const Center(
             child:
                 Text("Add Prescription", style: TextStyle(color: Colors.black)),
@@ -321,14 +322,7 @@ class _AddPrescriptionStepOneState extends State<AddPrescriptionStepOneWidget> {
                     showSelectedItems: true,
                     showSearchBox: true,
                   ),
-                  items: const [
-                    '1/2 Capsule',
-                    '1 Capsule',
-                    '1 ML',
-                    '2.5 ML',
-                    '5 ML',
-                    '10 ML'
-                  ],
+                  items: CommonData.doseList,
                   selectedItem: selectedDose,
                 ),
               ),

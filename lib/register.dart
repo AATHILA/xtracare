@@ -281,13 +281,13 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
   Future<void> _addUser(BuildContext context) async {
     User newUser = User(
-      firstName: firstNameController.text.trim(),
-      lastName: lastNameController.text.trim(),
-      username: usernameController.text.trim(),
-      dob: dobController.text.trim(),
-      password: passwordController.text.trim(),
-      phonenumber: phoneNumberController.text.trim(),
-    );
+        firstName: firstNameController.text.trim(),
+        lastName: lastNameController.text.trim(),
+        username: usernameController.text.trim(),
+        dob: dobController.text.trim(),
+        password: passwordController.text.trim(),
+        phonenumber: phoneNumberController.text.trim(),
+        role: 'USER');
 
     await ApiCall.signUp(newUser).then((userData) {
       if (userData.statusCode == 201) {

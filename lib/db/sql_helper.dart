@@ -41,6 +41,7 @@ class SQLHelper {
         phonenumber TEXT,
         username TEXT,
         password TEXT,
+        role TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updatedOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         sync_status TEXT DEFAULT 'PI'

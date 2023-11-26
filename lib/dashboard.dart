@@ -36,9 +36,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   }
 
   dataRefresh() async {
-    await SyncDataFromServer.syncDataFromServer();
-    await SyncDataToServer.syncDataToServer();
-
     await SharedPreferHelper.getData('active_profile').then((value) {
       profileID = int.parse(value);
     });

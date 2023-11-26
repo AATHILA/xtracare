@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CommonData {
+  static const doseList = [
+    '1/2 Capsule',
+    '1 Capsule',
+    '1 ML',
+    '2.5 ML',
+    '5 ML',
+    '10 ML'
+  ];
   static List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(value: "Me", child: Text("Me")),

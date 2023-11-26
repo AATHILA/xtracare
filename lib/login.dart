@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:pill_reminder/admin/admin_home.dart';
 import 'package:pill_reminder/api/api_call.dart';
 import 'package:pill_reminder/constant.dart';
 import 'package:pill_reminder/db/profile_helper.dart';
@@ -81,46 +82,56 @@ class _LoginWidgetState extends State<LoginWidget> {
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: ElevatedButton(
                 child: const Text('Login'),
-                onPressed: () {
+                onPressed: () async {
                   Map<String, dynamic> map = {};
                   validateUser(usernameController.text.trim(),
                           passwordController.text.trim())
-                      .then((value) => {
-                            if (value.isNotEmpty)
-                              {
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginWidget()),
-                                  ModalRoute.withName("/home"),
-                                ),
-                                value.forEach((element) {
-                                  User usr = User.fromMap(element);
-                                  map['login_session_username'] = usr.username;
-                                  map['login_session_userid'] =
-                                      usr.id.toString();
-                                  ProfileHelper.getProfileActiveByRelation(
-                                          usr.id ?? 0, 'Me')
-                                      .then((value1) => {
-                                            value1.forEach((element1) {
-                                              Profile pf =
-                                                  Profile.fromMap(element1);
-                                              map['active_profile'] =
-                                                  pf.id.toString();
-                                            }),
-                                            SharedPreferHelper.saveData(map)    
-                                                .then(
-                                              (value) => Navigator.of(context)
-                                                  .pushNamedAndRemoveUntil(
-                                                      'home',
-                                                      (Route<dynamic> route) =>
-                                                          false),
-                                            )
-                                          });
-                                })
-                              }
-                          });
+                      .then((value) async {
+                    if (value.isNotEmpty) {
+                      /*
+                      if (value.first['username'] == 'admin@admin.com') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AdminHomeWidget()),
+                        );
+                      } else {
+                        await Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginWidget()),
+                          ModalRoute.withName("/home"),
+                        );
+                      }*/
+
+                      value.forEach((element) {
+                        User usr = User.fromMap(element);
+                        map['login_session_username'] = usr.username;
+                        map['login_session_userid'] = usr.id.toString();
+                        map['role'] = element['role'];
+                        ProfileHelper.getProfileActiveByRelation(
+                                usr.id ?? 0, 'Me')
+                            .then((value1) => {
+                                  value1.forEach((element1) {
+                                    Profile pf = Profile.fromMap(element1);
+                                    map['active_profile'] = pf.id.toString();
+                                  }),
+                                  SharedPreferHelper.saveData(map)
+                                      .then((value) {
+                                    if (map['role'] == 'ADMIN') {
+                                      Navigator.of(context)
+                                          .pushNamedAndRemoveUntil('homeadmin',
+                                              (Route<dynamic> route) => false);
+                                    } else {
+                                      Navigator.of(context)
+                                          .pushNamedAndRemoveUntil('home',
+                                              (Route<dynamic> route) => false);
+                                    }
+                                  })
+                                });
+                      });
+                    }
+                  });
                 })),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -152,6 +163,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       if (value.statusCode == 200) {
         Map<String, dynamic> userMap = jsonDecode(value.body);
         User tt = User.fromJson(userMap);
+
         UserHelper.deleteItem(tt.id!);
         UserHelper.createUser(tt);
         TableSequence tableSequence =

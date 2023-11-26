@@ -1,20 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:pill_reminder/api/api_call.dart';
 import 'package:pill_reminder/common_data.dart';
-import 'package:pill_reminder/db/medicine_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
 import 'package:pill_reminder/validate_helper.dart';
 
-class MedicineEditWidget extends StatefulWidget {
+class AdminMedicineEditWidget extends StatefulWidget {
   final String id;
-  const MedicineEditWidget({super.key, required this.id});
+  const AdminMedicineEditWidget({super.key, required this.id});
 
   @override
   State<StatefulWidget> createState() => _MedicineEditWidgetState();
 }
 
-class _MedicineEditWidgetState extends State<MedicineEditWidget> {
+class _MedicineEditWidgetState extends State<AdminMedicineEditWidget> {
   String? selectedValue = "PILL";
+  Medicine mm = Medicine();
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController sideeffectController = TextEditingController();
@@ -39,13 +42,14 @@ class _MedicineEditWidgetState extends State<MedicineEditWidget> {
       SharedPreferHelper.getData("login_session_userid").then((value) {
         var userID = int.parse(value);
       });
-      MedicineHelper.getMedicineById(widget.id).then((value) {
-        Medicine mm = Medicine.fromMap(value.first);
+      ApiCall.getMedicinesById(widget.id).then((value) {
+        Medicine tt = Medicine.fromMap(jsonDecode(value.body));
         setState(() {
-          nameController.text = mm.name!;
-          descriptionController.text = mm.description!;
-          sideeffectController.text = mm.sideEffects!;
-          selectedValue = mm.category;
+          nameController.text = tt.name!;
+          descriptionController.text = tt.description!;
+          sideeffectController.text = tt.sideEffects!;
+          selectedValue = tt.category;
+          mm = tt;
         });
       });
     });
@@ -57,8 +61,10 @@ class _MedicineEditWidgetState extends State<MedicineEditWidget> {
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
         sideEffects: sideeffectController.text.trim(),
-        category: selectedValue);
-    await MedicineHelper.updateMedicine(med).then((value) {
+        category: selectedValue,
+        createdAt: mm.createdAt,
+        updatedOn: DateTime.now().toString());
+    await ApiCall.updateMedicine(med).then((value) {
       Navigator.pop(context, true);
     });
   }
