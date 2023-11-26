@@ -1,18 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pill_reminder/db/medicine_helper.dart';
-import 'package:pill_reminder/medicineadd.dart';
+import 'package:pill_reminder/admin/admin_medicine_add.dart';
+import 'package:pill_reminder/admin/admin_medicine_edit.dart';
+import 'package:pill_reminder/api/api_call.dart';
 import 'package:pill_reminder/model/medicine.dart';
-import 'package:pill_reminder/medicine_edit.dart';
 
-class MedicineWidget extends StatefulWidget {
-  const MedicineWidget({super.key});
+class AdminMedicineWidget extends StatefulWidget {
+  const AdminMedicineWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() => _MedicineWidgetState();
+  State<StatefulWidget> createState() => _AdminMedicineWidgetState();
 }
 
-class _MedicineWidgetState extends State<MedicineWidget> {
+class _AdminMedicineWidgetState extends State<AdminMedicineWidget> {
   List<Medicine> foundlist = [];
 
   @override
@@ -24,12 +26,13 @@ class _MedicineWidgetState extends State<MedicineWidget> {
   void dataRefresh() {
     List<Medicine> tmpList = [];
 
-    MedicineHelper.getMedicines().then((value) {
-      for (var item in value) {
-        tmpList.add(Medicine.fromMap(item));
-      }
+    ApiCall.getMedicinesSearch().then((list) {
+      jsonDecode(list.body);
+      Iterable l = json.decode(list.body);
+      List<Medicine> medicines =
+          List<Medicine>.from(l.map((model) => Medicine.fromJson(model)));
       setState(() {
-        foundlist = tmpList;
+        foundlist = medicines;
       });
     });
   }
@@ -43,7 +46,7 @@ class _MedicineWidgetState extends State<MedicineWidget> {
             bool refresh = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const MedicineAddWidget()));
+                    builder: (context) => const AdminMedicineAddWidget()));
 
             if (refresh) dataRefresh();
           },
@@ -57,7 +60,7 @@ class _MedicineWidgetState extends State<MedicineWidget> {
                       padding: const EdgeInsets.all(10),
                       child: TextField(
                           onChanged: (search) {
-                            MedicineHelper.getMedicineByName('$search%')
+                            /* MedicineHelper.getMedicineByName('$search%')
                                 .then((value) {
                               List<Medicine> tmpList = [];
                               for (var tmp in value) {
@@ -66,7 +69,7 @@ class _MedicineWidgetState extends State<MedicineWidget> {
                               setState(() {
                                 foundlist = tmpList;
                               });
-                            });
+                            });*/
                           },
                           decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
@@ -139,7 +142,8 @@ class _MedicineWidgetState extends State<MedicineWidget> {
           bool refresh = await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => MedicineEditWidget(id: medicine.id!)));
+                  builder: (context) =>
+                      AdminMedicineEditWidget(id: medicine.id!)));
 
           if (refresh) dataRefresh();
         },

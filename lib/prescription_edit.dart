@@ -4,6 +4,7 @@ import 'package:icons_flutter/icons_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pill_reminder/db/prescription_helper.dart';
 import 'package:pill_reminder/model/prescription.dart';
+import 'package:pill_reminder/prescription_medication_add.dart';
 
 class PrescriptionEditWidget extends StatefulWidget {
   final int id;
@@ -23,6 +24,10 @@ class _PrescriptionEditWidgetState extends State<PrescriptionEditWidget> {
   void initState() {
     super.initState();
 
+    refreshData();
+  }
+
+  refreshData() {
     PrescriptionHelper.prescriptionByIdList(widget.id).then((value) {
       setState(() {
         prescription = value;
@@ -35,11 +40,25 @@ class _PrescriptionEditWidgetState extends State<PrescriptionEditWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: const Center(
-            child: Text("Edit Prescription",
-                style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          title: Container(
+            alignment: Alignment.topLeft,
+            child: const Text("Edit Prescription",
+                style: TextStyle(color: Colors.black)),
           ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            bool refresh = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddMedicationWidget(id: widget.id)));
+
+            if (refresh) refreshData();
+          },
+          child: const Icon(Icons.add),
         ),
         body: _loading
             ? Container(

@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pill_reminder/dashboard.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
 import 'package:pill_reminder/db/user_helper.dart';
+import 'package:pill_reminder/feedbackadd.dart';
 import 'package:pill_reminder/medicine.dart';
 import 'package:pill_reminder/model/user.dart';
 import 'package:pill_reminder/my_drawer_header.dart';
@@ -11,6 +12,7 @@ import 'package:pill_reminder/notification_helper.dart';
 import 'package:pill_reminder/notification_settings.dart';
 import 'package:pill_reminder/prescription.dart';
 import 'package:pill_reminder/profiles.dart';
+import 'package:pill_reminder/sync_data_widget.dart';
 import 'package:pill_reminder/timeslot.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -23,7 +25,7 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   User usr = User();
   var currentPage = DrawerSections.dashboard;
-  var titleApp = 'Pill Reminder';
+  var titleApp = 'Dashboard';
 
   @override
   void initState() {
@@ -40,45 +42,46 @@ class _HomeWidgetState extends State<HomeWidget> {
               })
         });
   }
+
   showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("No"),
+      onPressed: () {
+        setState(() {
+          currentPage = DrawerSections.dashboard;
+        });
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed: () {
+        SharedPreferHelper.removeData("login_session_username");
+        SharedPreferHelper.removeData("login_session_userid");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('login', (Route<dynamic> route) => false);
+      },
+    );
 
-  // set up the buttons
-  Widget cancelButton = TextButton(
-    child: Text("No"),
-    onPressed:  () {
-      setState(() {
-        currentPage=DrawerSections.dashboard;
-      });
-      Navigator.pop(context);
-    },
-  );
-  Widget continueButton = TextButton(
-    child: Text("Yes"),
-    onPressed:  () { 
-      SharedPreferHelper.removeData("login_session_username");
-      SharedPreferHelper.removeData("login_session_userid");
-      Navigator.of(context).pushNamedAndRemoveUntil(
-                'login', (Route<dynamic> route) => false);},
-  );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Confirmation"),
+      content: Text("Are you sure want to logout?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
 
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text("Confirmation"),
-    content: Text("Are you sure want to logout?"),
-    actions: [
-      cancelButton,
-      continueButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   listenToNotification() async {
     onClickNotification.stream.listen((event) async {
@@ -104,15 +107,18 @@ class _HomeWidgetState extends State<HomeWidget> {
       container = const PrescriptionWidget();
     } else if (currentPage == DrawerSections.notifications) {
       container = const NotificationSettingsWidget();
-    } /* else if (currentPage == DrawerSections.privacy_policy) {
-      container = PrivacyPolicyPage();
-    } */
-    
+    } else if (currentPage == DrawerSections.sync) {
+      container = const SyncDataWidget();
+    } else if (currentPage == DrawerSections.feedback) {
+      container = const FeedBackAddWidget();
+    }
+
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
-        title: Center(
+        title: Container(
+          alignment: Alignment.topLeft,
           child: Text(titleApp, style: const TextStyle(color: Colors.black)),
         ),
       ),
@@ -148,10 +154,12 @@ class _HomeWidgetState extends State<HomeWidget> {
           const Divider(),
           menuItem(6, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
-          menuItem(7, "Logout", Icons.logout,
+          menuItem(7, "Feedback", Icons.feedback,
+              currentPage == DrawerSections.feedback ? true : false),
+          menuItem(8, "Manual Sync", Icons.sync,
+              currentPage == DrawerSections.logout ? true : false),
+          menuItem(9, "Logout", Icons.logout,
               currentPage == DrawerSections.logout ? true : false)
-          
-
         ],
       ),
     );
@@ -163,7 +171,6 @@ class _HomeWidgetState extends State<HomeWidget> {
       child: InkWell(
         onTap: () {
           Navigator.pop(context);
-
           setState(() {
             if (id == 1) {
               currentPage = DrawerSections.dashboard;
@@ -184,13 +191,18 @@ class _HomeWidgetState extends State<HomeWidget> {
               currentPage = DrawerSections.notifications;
               titleApp = 'Notification';
             } else if (id == 7) {
+              currentPage = DrawerSections.feedback;
+              titleApp = 'Feedback';
+            } else if (id == 8) {
+              currentPage = DrawerSections.sync;
+              titleApp = "Manual Sync";
+            } else if (id == 9) {
               currentPage = DrawerSections.logout;
+              titleApp = 'Logout';
             }
-            
           });
           if (currentPage == DrawerSections.logout) {
-             showAlertDialog(context);
-           
+            showAlertDialog(context);
           }
         },
         child: Padding(
@@ -229,6 +241,7 @@ enum DrawerSections {
   medicine,
   prescription,
   notifications,
+  feedback,
+  sync,
   logout
-  
 }
