@@ -41,6 +41,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     });
 
     await SchedulesHelper.getSchedulesToday(date, profileID).then((value) {
+      value.sort((a, b) {return DateFormat('hh:mm a')
+            .parse(a.time!).compareTo(DateFormat('hh:mm a')
+            .parse(b.time!));});
       setState(() {
         listToShow = value;
       });
@@ -52,7 +55,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     return Scaffold(
         floatingActionButton: SpeedDial(
             icon: Icons.add,
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.black45,
+          
 
 //provide here features of your parent FAB
 

@@ -1,3 +1,4 @@
+
 class Dashboard {
   int? id;
   String? date;
@@ -40,6 +41,8 @@ class Dashboard {
       audioName: map['audio_name'],
     );
   }
+  
+ 
 }
 
 class DashboardItem {

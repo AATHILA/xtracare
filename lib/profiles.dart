@@ -78,7 +78,7 @@ class _ProfilesWidgetState extends State<ProfilesWidget> {
         elevation: 8.0,
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Container(
-          decoration: const BoxDecoration(color: Constants.listBackgroundColor),
+          decoration: const BoxDecoration(color: Constants.listBackgroundColor,borderRadius: BorderRadius.all(Radius.circular(5))),
           child: makeListTile(profile),
         ),
       );

@@ -115,6 +115,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   value1.forEach((element1) {
                                     Profile pf = Profile.fromMap(element1);
                                     map['active_profile'] = pf.id.toString();
+                                    map['active_profile_name'] = pf.name.toString();
                                   }),
                                   SharedPreferHelper.saveData(map)
                                       .then((value) {

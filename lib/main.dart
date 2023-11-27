@@ -55,6 +55,7 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     await SyncDataFromServer.syncDataFromServer();
     await SyncDataToServer.syncDataToServer();
+    await NotificationService().scheduleNotification();
     return Future.value(true);
   });
 }

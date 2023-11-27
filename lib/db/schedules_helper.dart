@@ -53,8 +53,8 @@ class SchedulesHelper {
     final db = await SQLHelper.db();
     List<Dashboard> list = [];
     List<Map> rows = await db.rawQuery(
-        'select s.id,s.schedule_date,time,p.name as profile_name,s.profile_id,n.alarm_sound from  schedules s,notification_settings n, profile p where p.id=s.profile_id and s.profile_id=n.profile_id and schedule_date=? and s.profile_id like ? order by substr(time,7,2),substr(time,1,5)',
-        [todaydate, profileId > 0 ? profileId : '%']);
+        'select s.id,s.schedule_date,time,p.name as profile_name,s.profile_id,n.alarm_sound from  schedules s,notification_settings n, profile p where p.id=s.profile_id and s.profile_id=n.profile_id and schedule_date=? and s.profile_id like ? order by substr(time,7,2),substr(time,1,5)'
+       , [todaydate, profileId > 0 ? profileId : '%']);
 
     for (var item in rows) {
       Dashboard dsh = Dashboard(

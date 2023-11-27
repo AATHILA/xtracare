@@ -58,6 +58,7 @@ class _ProfileAddWidgetState extends State<ProfileAddWidget> {
         ),
         appBar: AppBar(
           backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
           title: const Center(
             child: Text("Add Profile", style: TextStyle(color: Colors.black)),
           ),

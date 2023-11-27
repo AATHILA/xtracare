@@ -26,6 +26,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   User usr = User();
   var currentPage = DrawerSections.dashboard;
   var titleApp = 'Dashboard';
+  String profileName = '';
 
   @override
   void initState() {
@@ -41,6 +42,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                 })
               })
         });
+    SharedPreferHelper.getData('active_profile_name').then((value) {
+      setState(() {
+        profileName = value;
+      });
+    });
   }
 
   showAlertDialog(BuildContext context) {
@@ -115,13 +121,30 @@ class _HomeWidgetState extends State<HomeWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
-        title: Container(
-          alignment: Alignment.topLeft,
-          child: Text(titleApp, style: const TextStyle(color: Colors.black)),
-        ),
-      ),
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Container(
+                alignment: Alignment.topLeft,
+                child:
+                    Text(titleApp, style: const TextStyle(color: Colors.black)),
+              ),
+              Spacer(),
+              Container(
+                alignment: Alignment.topRight,
+                child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                       Container(
+                        padding:EdgeInsets.all(5) ,child: Icon(Icons.person_4_rounded,size: 18,)) ,
+                      Text(profileName,
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 15))
+                    ]),
+              )
+            ],
+          )),
       body: container,
       drawer: Drawer(
         child: SingleChildScrollView(

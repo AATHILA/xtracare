@@ -80,7 +80,7 @@ class _TimeSlotWidgetState extends State<TimeSlotWidget> {
         elevation: 8.0,
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
         child: Container(
-          decoration: const BoxDecoration(color: Colors.black),
+          decoration: const BoxDecoration(color: Colors.black,borderRadius: BorderRadius.all(Radius.circular(5))),
           child: makeListTile(timeslot),
         ),
       );

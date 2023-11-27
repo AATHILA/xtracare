@@ -77,10 +77,12 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
               child: const Icon(Icons.save),
             ),
             appBar: AppBar(
-              backgroundColor: const Color.fromARGB(255, 7, 53, 91),
-              title: const Center(
+              backgroundColor:  Colors.white,
+              foregroundColor: Colors.black,
+              title:  Container(
+                alignment: Alignment.topLeft,
                 child: Text("Update Profile",
-                    style: TextStyle(color: Colors.white)),
+                    style: TextStyle(color: Colors.black)),
               ),
             ),
             body: Container(
@@ -150,6 +152,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                             Map<String, dynamic> map = {};
 
                             map['active_profile'] = widget.id.toString();
+                             map['active_profile_name'] = newpf.name.toString();
                             SharedPreferHelper.saveData(map).then((value) => {
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       'home', (Route<dynamic> route) => false),

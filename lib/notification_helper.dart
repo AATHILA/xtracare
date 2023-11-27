@@ -50,7 +50,7 @@ class NotificationService {
       for (var dashboard in value) {
         DateTime currentDate = DateTime.now();
 
-        DateTime dtt = DateFormat('dd/MM/yyyy HH:mm aa')
+        DateTime dtt = DateFormat('dd/MM/yyyy hh:mm a')
             .parse('${dashboard.date} ${dashboard.time}');
         if (dtt.compareTo(currentDate) > 0) {
           showNotification(
@@ -81,7 +81,7 @@ class NotificationService {
     await SchedulesHelper.getSchedulesById(id).then((dash) {
       dashboard = dash.first;
     });
-    DateTime dtt = DateFormat('dd/MM/yyyy HH:mm aa')
+    DateTime dtt = DateFormat('dd/MM/yyyy hh:mm a')
         .parse('${dashboard.date} ${dashboard.time}')
         .add(Duration(minutes: snooze));
 
