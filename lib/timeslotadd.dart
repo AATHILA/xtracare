@@ -134,9 +134,11 @@ class _TimeSlotAddWidgetState extends State<TimeSlotAddWidget> {
           child: const Icon(Icons.save),
         ),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 7, 53, 91),
-          title: const Center(
-            child: Text("Add Timeslot", style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          title:  Container(
+            alignment: Alignment.topLeft,
+            child: Text("Add Timeslot", style: TextStyle(color: Colors.black)),
           ),
         ),
         body: SingleChildScrollView(

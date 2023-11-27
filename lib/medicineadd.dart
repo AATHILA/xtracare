@@ -54,7 +54,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
           description: descriptionController.text.trim(),
           sideEffects: sideeffectController.text.trim(),
           category: selectedValue);
-      await MedicineHelper.createMedicine(med);
+      await MedicineHelper.createMedicine(med,'PI');
     });
     Navigator.pop(context, true);
   }
@@ -74,6 +74,7 @@ class _MedicineAddWidgetState extends State<MedicineAddWidget> {
         ),
         appBar: AppBar(
           backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
           title: const Center(
             child: Text("Add Medicine", style: TextStyle(color: Colors.black)),
           ),

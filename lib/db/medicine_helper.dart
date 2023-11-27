@@ -2,9 +2,10 @@ import 'package:pill_reminder/db/sql_helper.dart';
 import 'package:pill_reminder/model/medicine.dart';
 
 class MedicineHelper {
-  static Future<int> createMedicine(Medicine medicine) async {
+  static Future<int> createMedicine(Medicine medicine,String syncStatus) async {
     final db = await SQLHelper.db();
     Map<String, dynamic> map = medicine.toMap();
+    map['sync_status']=syncStatus;
     return await db.insert('medicine', map);
   }
 

@@ -26,10 +26,8 @@ class SyncDataFromServer {
             List<Medicine>.from(l.map((model) => Medicine.fromJson(model)));
         for (Medicine med in medicines) {
           await MedicineHelper.deleteMedicine(med.id!);
-          await MedicineHelper.createMedicine(med).then((id) async {
-            await CommonHelper.updateSyncStatus(
-                'medicine', 'id=?', [id], 'DONE');
-
+          await MedicineHelper.createMedicine(med,'DONE').then((id) async {
+            
             SyncStatusTable syncStatusTable = SyncStatusTable(
                 tableName: 'medicine',
                 lastSynced: DateTime.parse(med.updatedOn!));

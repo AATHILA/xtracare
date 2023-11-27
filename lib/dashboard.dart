@@ -8,6 +8,7 @@ import 'package:pill_reminder/api/sync_data_from_server.dart';
 import 'package:pill_reminder/api/sync_data_to_server.dart';
 import 'package:pill_reminder/db/schedules_helper.dart';
 import 'package:pill_reminder/db/sharedpref_helper.dart';
+import 'package:pill_reminder/medicineadd.dart';
 import 'package:pill_reminder/model/dashboard.dart';
 import 'package:pill_reminder/notification_details.dart';
 import 'package:pill_reminder/notification_helper.dart';
@@ -88,6 +89,16 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const TimeSlotAddWidget()));
+                  }),
+
+                   SpeedDialChild(
+                  child: Icon(Icons.medical_services_outlined),
+                  label: 'Add Medicine',
+                  onTap: () async {
+                    bool refresh = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MedicineAddWidget()));
                   }),
             ]),
         body: SingleChildScrollView(
