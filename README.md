@@ -1,4 +1,4 @@
-..................................XTRA CARE...................................
+__XTRA CARE__
 
 A mobile application called "Xtra Care" was created to help people efficiently manage their
 prescription schedules. Adherence to medication is essential for sustaining good health, particularly
@@ -9,7 +9,7 @@ medication management tool, this mini project seeks to address this issue. This 
 address this issue by providing a user-friendly and intuitive mobile app that serves as a reliable pill
 reminder and medication management tool.
 
-................................OBJECTIVES...........................................
+__OBJECTIVES__
 1. Enhance Medication Adherence:
 • The main goal is to improve medication adherence by sending consumers timely
 warnings and reminders, which lowers the likelihood of missed doses.
@@ -51,7 +51,7 @@ These goals work together to develop a useful tool that will help people properl
 thereby enhancing their health and quality of life and maybe lightening the load on the healthcare
 system.
 
-................................PROBLEM DEFINITION...............................................
+__PROBLEM DEFINITION__
 Medication non-adherence continues to be a major concern in today's quick-paced and more complex
 healthcare environment. Many people find it difficult to follow their recommended medication
 regimens, especially those with chronic conditions or many prescriptions. Non-adherence to
@@ -83,7 +83,7 @@ mobile application that:
 ➢ Provides comprehensive pharmaceutical advice and information.
 ➢ Maintains data security and user privacy.
 
-.................................BASIC FUNCTIONALITIES........................................
+__BASIC FUNCTIONALITIES__
 
 1.User Authentication and Data Security:
 • Implement secure user authentication to protect personal health information and ensure data
@@ -125,14 +125,14 @@ These basic functionalities work together to create a reliable and user-friendly
 medication management solution, ultimately improving medication adherence and promoting better
 health outcomes for users.
 
-..........................Software Requirements...............................
+__Software Requirements__
 • Front-end : Flutter, Dart
 • Back-end : Python, MySQL
 
-........................Hardware Requirements..............................
+__Hardware Requirements__
 • Processor: Intel(R) Core(TM) i3-1115G4 @ 3.00GHz 3.00 GHz
 • RAM: 8.00 GB
 
-...........................Tools...............................
+__Tools__
 • Visual Studio
 • PyCharm
