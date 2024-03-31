@@ -52,6 +52,7 @@ thereby enhancing their health and quality of life and maybe lightening the load
 system.
 
 __PROBLEM DEFINITION__
+
 Medication non-adherence continues to be a major concern in today's quick-paced and more complex
 healthcare environment. Many people find it difficult to follow their recommended medication
 regimens, especially those with chronic conditions or many prescriptions. Non-adherence to
@@ -126,13 +127,16 @@ medication management solution, ultimately improving medication adherence and pr
 health outcomes for users.
 
 __Software Requirements__
+
 • Front-end : Flutter, Dart
 • Back-end : Python, MySQL
 
 __Hardware Requirements__
+
 • Processor: Intel(R) Core(TM) i3-1115G4 @ 3.00GHz 3.00 GHz
 • RAM: 8.00 GB
 
 __Tools__
+
 • Visual Studio
 • PyCharm
